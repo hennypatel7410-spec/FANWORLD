@@ -65,6 +65,26 @@ header { display: flex; justify-content: space-between; align-items: center; pad
 </head>
 <body>
 
+<!-- FanWorld Policy Modal -->
+<div id="policyModal" style="
+  position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999;
+  display:flex; align-items:center; justify-content:center;">
+  <div style="background:#fff; padding:32px 22px; border-radius:16px; max-width:380px; box-shadow:0 8px 32px #0002; font-family:'Barlow',sans-serif;">
+    <h2 style="margin-top:0; font-size:1.18em;">FanWorld Policy</h2>
+    <p style="font-size:1em; margin-bottom:18px;">
+      I agree to the FanWorld Policy: All content is properly credited, shared only for sweet entertainment and enjoyment, not intended to harm anyone or any platform.<br>
+      I understand I can only access FanWorld after agreeing. <b>Sweet enjoyment is the goal!</b>
+    </p>
+    <div style="margin-bottom:16px;">
+      <label>
+        <input type="checkbox" id="agreeBox" />
+        I agree to the FanWorld Policy.
+      </label>
+    </div>
+    <button id="agreeBtn" disabled style="padding:9px 18px; border-radius:8px; background:#b69967; color:#fff; border:none; font-weight:700; cursor:pointer;">Enter FanWorld</button>
+  </div>
+</div>
+
 <header>
     <div id="siteTitle">FanWorld</div>
     <input id="searchBar" placeholder="Search..." />
@@ -83,6 +103,28 @@ header { display: flex; justify-content: space-between; align-items: center; pad
 <div class="container" style="display:none;" id="singlePostView"></div>
 
 <script>
+// --- FanWorld Policy Modal JS ---
+const policyModal = document.getElementById('policyModal');
+const agreeBox = document.getElementById('agreeBox');
+const agreeBtn = document.getElementById('agreeBtn');
+
+// Enable button only if box checked
+agreeBox.addEventListener('change', function() {
+  agreeBtn.disabled = !agreeBox.checked;
+});
+
+// Enter button hides modal
+agreeBtn.addEventListener('click', function() {
+  policyModal.style.display = 'none';
+});
+
+// Show modal EVERY visit (if you want to remember once per browser, see below)
+window.addEventListener('DOMContentLoaded', function() {
+  policyModal.style.display = 'flex';
+});
+
+
+// FanWorld main JS (unchanged)
 const posts = [
     {id: 1, image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640', title: 'Cheer Squad', celebrity: 'Taylor Swift', text: 'Swifties unite at the world tour!', credit: 'Photo by Alex Brown', creditUrl: 'https://unsplash.com/photos/1506744038136-46273834b3fb'},
     {id: 2, image: 'https://images.unsplash.com/photo-1504652623000-1801eb50e74a?w=640', title: 'Victory Fans', celebrity: 'Cristiano Ronaldo', text: 'Real Madrid fans celebrating big wins!', credit: 'Getty Images', creditUrl:'https://gettyimages.com/'},
