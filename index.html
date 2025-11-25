@@ -1,4 +1,3 @@
-<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -37,11 +36,10 @@ input, textarea, select, button { font-size: 16px; }
   display: inline-block;
   width: 100%;
 }
-
-/* Force all images (Post A & similar thumbs) to same height */
+/* Force all images (Post A & B) to same height in main feed */
 .tile-img, .similar-thumb {
   width: 100%;
-  height: 220px; /* fixed height for Post A and similar posts */
+  height: 220px; 
   object-fit: cover;
   border-radius: 12px;
 }
@@ -60,38 +58,6 @@ input, textarea, select, button { font-size: 16px; }
 .tile-overlay span:first-child { font-weight: 700; font-size: 1rem; display: block; }
 .tile-overlay span:last-child { font-weight: 400; font-size: 0.85rem; display: block; }
 
-/* Post Type B box */
-.post-tile-b {
-  background: #e8dcc5; /* beige box */
-  color: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  height: 110px; /* HALF the size of Post A */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  cursor: pointer;
-  margin-bottom: 16px;
-  text-align: center;
-  font-weight: 700;
-  font-size: 1.05rem;
-  position: relative;
-}
-.post-tile-b span {
-  display: block;
-  margin-top: 4px;
-  font-size: 0.9rem;
-  font-weight: 400;
-}
-.post-tile-b .credit {
-  position: absolute;
-  bottom: 6px;
-  width: 100%;
-  font-size: 0.7rem;
-  font-weight: 400;
-  color: #fff;
-}
-
 .post-card { border-radius: 12px; overflow: hidden; background: #fefefe; padding: 12px; box-shadow: 0 2px 10px #0001; }
 .back-btn { background: #b69967; color: #fff; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; margin-bottom: 12px; }
 
@@ -99,15 +65,43 @@ input, textarea, select, button { font-size: 16px; }
 #postsList, .similar-posts-list { column-count: 3; column-gap: 16px; }
 @media(max-width: 1020px){ #postsList, .similar-posts-list { column-count: 2; } }
 @media(max-width: 600px){ #postsList, .similar-posts-list { column-count: 1; } }
+
+/* Full image for single post view (Post A) */
+.post-card .tile-img.single {
+  width: 100%;
+  height: auto; /* full image visible */
+  object-fit: contain; 
+  border-radius: 12px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+/* Post B rectangle smaller */
+.post-tile.type-b, .similar-post-card.type-b {
+  height: 110px; /* half of 220px */
+  background: #f5f0e6;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 10px;
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 12px;
+}
+.post-tile.type-b .credit, .similar-post-card.type-b .credit {
+  font-size: 0.7rem;
+  color: #fff;
+  margin-top: 4px;
+}
 </style>
 </head>
 <body>
 
-<!-- FanWorld Policy Modal -->
 <div id="policyModal" aria-hidden="false">
   <div class="modal-inner">
     <h2>FanWorld Policy</h2>
-    <p>I agree to the FanWorld Policy: All content is properly credited, shared only for sweet entertainment and enjoyment, not intended to harm anyone or any platform. I understand I can only access FanWorld after agreeing. <strong>Sweet enjoyment is the goal!</strong></p>
+    <p>I agree to the FanWorld Policy: All content is properly credited, shared only for sweet entertainment and enjoyment. <strong>Sweet enjoyment is the goal!</strong></p>
     <div style="margin-bottom:12px;">
       <label><input type="checkbox" id="agreeBox"> I agree to the FanWorld Policy.</label>
     </div>
@@ -142,45 +136,35 @@ agreeBox.addEventListener('change',()=>{agreeBtn.disabled=!agreeBox.checked;});
 agreeBtn.addEventListener('click',()=>{closePolicy();});
 window.addEventListener('DOMContentLoaded',()=>{openPolicy();});
 
-// Posts array (Post A + Post B)
+// Posts array with Tanya Mittal Post A on top and one Post B
 const posts=[
+  {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!'},
   {id:1,type:'A',image:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640',title:'Cheer Squad',celebrity:'Taylor Swift',text:'Swifties unite at the world tour!'},
   {id:3,type:'A',image:'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=640',title:'Rock On',celebrity:'Beyoncé',text:'A sea of lights from Queen Bey\'s fans!'},
   {id:4,type:'A',image:'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=640',title:'Football Fever',celebrity:'Lionel Messi',text:'Messi fans everywhere show team spirit.'},
   {id:5,type:'A',image:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=640',title:'Iconic Night',celebrity:'Billie Eilish',text:'Billie fans go wild at concert event.'},
-
-  // NEW Post Type A
-  {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!'},
-
-  // Post Type B — rectangle, credit, link
-  {id:21,type:'B',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek and Mridul Tiwari',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'mj.vishal, Instagram'}
+  {id:6,type:'B',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'mj.vishal, Instagram'}
 ];
 
 let currentPost=null,lastViewedPostId=null;
 
 function renderGrid(postsArr){
   const postsList=document.getElementById('postsList');
-  postsList.innerHTML=postsArr.map(post => {
-    if(post.type==='A'){
-      return `
-        <div class="post-tile" onclick="showPost(${post.id})">
-          <img class="tile-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
-          <div class="tile-overlay">
-            <span>${escapeHtml(post.title)}</span>
-            <span>${escapeHtml(post.celebrity)}</span>
-          </div>
-        </div>
-      `;
-    } else {
-      return `
-        <div class="post-tile-b" onclick="window.open('${escapeHtml(post.externalLink)}','_blank')">
-          ${escapeHtml(post.title)}
-          <span>${escapeHtml(post.celebrity)}</span>
-          <div class="credit">${escapeHtml(post.credit)}</div>
-        </div>
-      `;
+  postsList.innerHTML=postsArr.map(post=>{
+    if(post.type==='B'){
+      return `<div class="post-tile type-b" onclick="showPost(${post.id})">
+        <div>${post.title}</div>
+        <div class="credit">${post.credit}</div>
+      </div>`;
     }
-  }).reverse().join(''); // latest posts appear first
+    return `<div class="post-tile" onclick="showPost(${post.id})">
+      <img class="tile-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
+      <div class="tile-overlay">
+        <span>${escapeHtml(post.title)}</span>
+        <span>${escapeHtml(post.celebrity)}</span>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function showPost(id){
@@ -189,9 +173,10 @@ function showPost(id){
   currentPost=post;
   lastViewedPostId=id;
   document.getElementById('mainFeed').style.display='none';
-  const creditSection=post.type==='A'
-    ? ''
-    : `<div class="credit">Credit: ${escapeHtml(post.credit)}</div>`;
+  let creditSection='';
+  if(post.type==='B'){
+    creditSection=`<div class="credit">Credit: ${escapeHtml(post.credit)}</div><div class="post-text"><a href="${escapeHtml(post.externalLink)}" target="_blank" style="color:#222;text-decoration:underline;">Go to post</a></div>`;
+  }
   document.getElementById('singlePostView').innerHTML=`
     <button class="back-btn" onclick="goBack()">← Back</button>
     <div class="post-card">
@@ -199,48 +184,14 @@ function showPost(id){
       <div class="celebrity-credit">${escapeHtml(post.celebrity)}</div>
       <div class="post-title">${escapeHtml(post.title)}</div>
       ${creditSection}
-      ${post.text?`<div class="post-text">${escapeHtml(post.text)}</div>`:''}
+      ${post.type==='A'?`<div class="post-text">${escapeHtml(post.text)}</div>`:''}
     </div>
-    ${post.type==='A'?`
     <div class="similar-posts-section">
       <div class="similar-posts-title">Similar posts:</div>
       <div class="similar-posts-list">${renderSimilarPosts(post.id)}</div>
-    </div>`:''}
+    </div>
   `;
   document.getElementById('singlePostView').style.display='block';
 }
 
-function goBack(){ document.getElementById('mainFeed').style.display='flex'; document.getElementById('singlePostView').style.display='none'; }
-
-function renderSimilarPosts(currentId){
-  return posts.filter(p=>p.id!==currentId).map(p=>`
-    <div class="similar-post-card" onclick="showPost(${p.id})">
-      ${p.type==='A'?`<img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">`:''}
-      <div class="tile-overlay">
-        <span>${escapeHtml(p.title)}</span>
-        <span>${escapeHtml(p.celebrity)}</span>
-      </div>
-    </div>
-  `).join('');
-}
-
-function escapeHtml(str){ if(!str && str!==0) return ''; return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
-
-// Search functionality
-const searchInput=document.getElementById('searchBar');
-let searchTimer=null;
-if(searchInput){ searchInput.addEventListener('keyup',()=>{
-  clearTimeout(searchTimer);
-  searchTimer=setTimeout(()=>{
-    const query=searchInput.value.toLowerCase();
-    const filtered=posts.filter(p=>p.title.toLowerCase().includes(query)||p.celebrity.toLowerCase().includes(query));
-    if(document.getElementById('mainFeed').style.display!=='none'){ renderGrid(filtered); }
-  },300);
-}); }
-
-document.addEventListener('DOMContentLoaded',()=>{ renderGrid(posts); });
-</script>
-</body>
-</html>
-
-
+function goBack(){ document.getElementById('mainFeed').
