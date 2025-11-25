@@ -28,18 +28,36 @@ input, textarea, select, button { font-size: 16px; }
 #policyModal button { padding: 9px 16px; border-radius: 8px; background: #b69967; color: #fff; border: none; font-weight: 700; cursor: pointer; }
 
 /* Post tile and card CSS */
-.post-tile, .similar-post-card { display: inline-block; width: 100%; margin-bottom: 16px; border-radius: 12px; overflow: hidden; cursor: pointer; }
+.post-tile, .similar-post-card { display: inline-block; width: 100%; margin-bottom: 16px; border-radius: 12px; overflow: hidden; cursor: pointer; position: relative; }
 .tile-img, .similar-thumb { width: 100%; height: auto; display: block; border-radius: 12px; }
-.tile-overlay { position: absolute; bottom: 0; width: 100%; padding: 6px 8px; background: rgba(0,0,0,0.35); color: #fff; display: flex; flex-direction: column; }
+/* Overlay on bottom of image */
+.tile-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 6px 8px;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  font-size: 0.85rem;
+  border-radius: 0 0 12px 12px;
+}
 .post-card { border-radius: 12px; overflow: hidden; background: #fefefe; padding: 12px; box-shadow: 0 2px 10px #0001; }
 .back-btn { background: #b69967; color: #fff; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; margin-bottom: 12px; }
 
 /* Masonry layout using CSS columns */
 #postsList, .similar-posts-list {
-  column-count: 3; /* number of columns */
+  column-count: 3;
   column-gap: 16px;
 }
 
+/* Hide duplicate titles in similar posts */
+.similar-post-card .celebrity-credit, 
+.similar-post-card .post-title { display: none; }
+
+/* Responsive */
 @media(max-width: 1020px){ 
   .container{max-width:99vw;} 
   #postsList, .similar-posts-list { column-count: 2; }
@@ -169,12 +187,9 @@ function goBack(){
 
 function renderSimilarPosts(currentId){
   return posts.filter(p=>p.id!==currentId).map(p=> `
-    <div class="similar-post-card" onclick="showPost(${p.id})">
+    <div class="similar-post-card" onclick="showPost(${p.id})" 
+         data-title="${escapeHtml(p.title)}" data-celebrity="${escapeHtml(p.celebrity)}">
       <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
-      <div style="text-align:center;">
-        <div class="post-title" style="display:block;font-size:1em;">${escapeHtml(p.title)}</div>
-        <div class="celebrity-credit" style="display:block;font-size:.96em;">${escapeHtml(p.celebrity)}</div>
-      </div>
     </div>
   `).join('');
 }
@@ -213,5 +228,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-  
-  
+    
