@@ -79,10 +79,6 @@ input, textarea, select, button { font-size: 16px; }
   column-gap: 16px;
 }
 
-/* Hide duplicate titles in similar posts */
-.similar-post-card .celebrity-credit, 
-.similar-post-card .post-title { display: none; }
-
 /* Responsive */
 @media(max-width: 1020px){ 
   .container{max-width:99vw;} 
@@ -233,9 +229,10 @@ function escapeHtml(str) {
     .replaceAll("'", '&#39;');
 }
 
-// --- Search Functionality ---
+// --- Search Functionality (now works in main feed & similar posts) ---
 const searchInput = document.getElementById('searchBar');
 let searchTimer = null;
+
 if (searchInput) {
   searchInput.addEventListener('keyup', () => {
     clearTimeout(searchTimer);
@@ -245,7 +242,30 @@ if (searchInput) {
         p.title.toLowerCase().includes(query) ||
         p.celebrity.toLowerCase().includes(query)
       );
-      renderGrid(filtered);
+
+      // Update main feed if visible
+      const mainFeed = document.getElementById('postsList');
+      if(document.getElementById('mainFeed').style.display !== 'none'){
+        renderGrid(filtered);
+      }
+
+      // Update similar posts if single post view is visible
+      const singlePostView = document.getElementById('singlePostView');
+      if(singlePostView.style.display !== 'none'){
+        const similarList = singlePostView.querySelector('.similar-posts-list');
+        if(similarList){
+          similarList.innerHTML = filtered.filter(p => p.id !== lastViewedPostId).map(p=> `
+            <div class="similar-post-card" onclick="showPost(${p.id})">
+              <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
+              <div class="tile-overlay">
+                <span>${escapeHtml(p.title)}</span>
+                <span>${escapeHtml(p.celebrity)}</span>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+
     }, 300);
   });
 }
