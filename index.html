@@ -27,16 +27,31 @@ input, textarea, select, button { font-size: 16px; }
 #policyModal label { display: flex; align-items: center; gap: 8px; font-size: 0.98rem; }
 #policyModal button { padding: 9px 16px; border-radius: 8px; background: #b69967; color: #fff; border: none; font-weight: 700; cursor: pointer; }
 
-/* Added post tile and card CSS */
-.post-tile { position: relative; cursor: pointer; border-radius: 12px; overflow: hidden; }
-.tile-img { width: 100%; height: auto; display: block; }
+/* Post tile and card CSS */
+.post-tile, .similar-post-card { display: inline-block; width: 100%; margin-bottom: 16px; border-radius: 12px; overflow: hidden; cursor: pointer; }
+.tile-img, .similar-thumb { width: 100%; height: auto; display: block; border-radius: 12px; }
 .tile-overlay { position: absolute; bottom: 0; width: 100%; padding: 6px 8px; background: rgba(0,0,0,0.35); color: #fff; display: flex; flex-direction: column; }
 .post-card { border-radius: 12px; overflow: hidden; background: #fefefe; padding: 12px; box-shadow: 0 2px 10px #0001; }
 .back-btn { background: #b69967; color: #fff; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; margin-bottom: 12px; }
 
-@media(max-width:1020px){ .container{max-width:99vw;} }
-@media(max-width:800px){ header{padding:12px 14px;} #siteTitle{font-size:1.4rem;} .main-feed-flex{flex-direction:column;align-items:stretch;gap:12px;} .welcome-box{width:98vw;max-width:400px;margin:0 auto 10px auto;border-radius:12px;} #postsList{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));} #searchBar{width:160px;} }
-@media(max-width:600px){ .container{padding:10px 12px;} .post-card, .similar-post-card{max-width:98vw;} .similar-posts-section{width:100vw;margin-left:-5vw;} .similar-thumb{height:60px;} #searchBar{width:140px;} }
+/* Masonry layout using CSS columns */
+#postsList, .similar-posts-list {
+  column-count: 3; /* number of columns */
+  column-gap: 16px;
+}
+
+@media(max-width: 1020px){ 
+  .container{max-width:99vw;} 
+  #postsList, .similar-posts-list { column-count: 2; }
+}
+@media(max-width: 600px){ 
+  .container{padding:10px 12px;} 
+  .post-card, .similar-post-card{max-width:98vw;} 
+  .similar-posts-section{width:100vw;margin-left:-5vw;} 
+  .similar-thumb{height:60px;} 
+  #searchBar{width:140px;} 
+  #postsList, .similar-posts-list { column-count: 1; }
+}
 </style>
 </head>
 <body>
@@ -78,12 +93,12 @@ const agreeBtn = document.getElementById('agreeBtn');
 function openPolicy(){
   policyModal.style.display = 'flex';
   policyModal.setAttribute('aria-hidden','false');
-  document.body.style.overflow = 'hidden'; // prevent background zoom/scroll
+  document.body.style.overflow = 'hidden';
 }
 function closePolicy(){
   policyModal.style.display = 'none';
   policyModal.setAttribute('aria-hidden','true');
-  document.body.style.overflow = ''; // restore
+  document.body.style.overflow = '';
 }
 
 agreeBox.addEventListener('change', function() {
@@ -93,7 +108,6 @@ agreeBtn.addEventListener('click', function() {
   closePolicy();
 });
 
-// Show modal on load
 window.addEventListener('DOMContentLoaded', function() {
   openPolicy();
 });
@@ -199,5 +213,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
+  
   
