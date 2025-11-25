@@ -16,7 +16,7 @@ input, textarea, select, button { font-size: 16px; }
 #searchBar { padding: 8px 14px; font-size: 1rem; border-radius: 7px; border: 1px solid #bbb; width: 220px; transition: border-color 0.2s; outline: none; background: #fff;}
 #searchBar:focus { border-color: #b69967; }
 .container { padding: 28px 14px; max-width: 940px; margin: 28px auto 0 auto; background: #fff; border-radius: 14px; min-height: 330px; }
-.main-feed-flex { display: flex; flex-direction: row; align-items: flex-start; gap: 20px; position: relative; min-height: 330px; background: #fff; }
+.main-feed-flex { display: flex; flex-direction: row; align-items: flex-start; gap: 20px; position: relative; min-height: 330px; background: #fff'; }
 
 /* Policy modal */
 #policyModal { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9999; display: flex; align-items: center; justify-content: center; }
@@ -36,25 +36,11 @@ input, textarea, select, button { font-size: 16px; }
   display: inline-block;
   width: 100%;
 }
-/* Force all images (Post A) to same height */
+/* Force all images (Post A & B) to same height on dashboard */
 .tile-img, .similar-thumb {
   width: 100%;
-  height: 220px; /* fixed height for uniformity */
+  height: 220px;
   object-fit: cover;
-  border-radius: 12px;
-}
-/* Post B rectangle styling */
-.post-tile.typeB, .similar-post-card.typeB {
-  background: #cbb08a; /* dark beige */
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 110px; /* half height of Post A */
-  font-weight: 700;
-  text-align: center;
-  padding: 8px;
   border-radius: 12px;
 }
 
@@ -78,9 +64,16 @@ input, textarea, select, button { font-size: 16px; }
 /* Masonry layout */
 #postsList, .similar-posts-list { column-count: 3; column-gap: 16px; }
 @media(max-width: 1020px){ #postsList, .similar-posts-list { column-count: 2; } }
-@media(max-width: 600px){ #postsList, .similar-posts-list { column-count: 1; }
+@media(max-width: 600px){ #postsList, .similar-posts-list { column-count: 1; } }
+
+/* SINGLE POST IMAGE FIX: show full image for Post A */
+.post-card .tile-img.single {
+  width: 100%;
+  height: auto; /* allow full image to show */
+  max-height: 80vh; /* optional: prevents it from exceeding viewport */
+  object-fit: contain; /* scales properly */
+  border-radius: 12px;
 }
-.credit-link { font-size: 0.75rem; color: #555; margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -89,7 +82,7 @@ input, textarea, select, button { font-size: 16px; }
 <div id="policyModal" aria-hidden="false">
   <div class="modal-inner">
     <h2>FanWorld Policy</h2>
-    <p>I agree to the FanWorld Policy: All content is properly credited, shared only for sweet entertainment and enjoyment. <strong>Sweet enjoyment is the goal!</strong></p>
+    <p>I agree to the FanWorld Policy: All content is properly credited, shared only for sweet entertainment and enjoyment, not intended to harm anyone or any platform. I understand I can only access FanWorld after agreeing. <strong>Sweet enjoyment is the goal!</strong></p>
     <div style="margin-bottom:12px;">
       <label><input type="checkbox" id="agreeBox"> I agree to the FanWorld Policy.</label>
     </div>
@@ -126,8 +119,12 @@ window.addEventListener('DOMContentLoaded',()=>{openPolicy();});
 
 // Posts array
 const posts=[
-  {id:1,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!'},
-  {id:6,type:'B',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'Instagram / mj.vishal'}
+  {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!'},
+  {id:1,type:'A',image:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640',title:'Cheer Squad',celebrity:'Taylor Swift',text:'Swifties unite at the world tour!'},
+  {id:3,type:'A',image:'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=640',title:'Rock On',celebrity:'Beyoncé',text:'A sea of lights from Queen Bey\'s fans!'},
+  {id:4,type:'A',image:'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=640',title:'Football Fever',celebrity:'Lionel Messi',text:'Messi fans everywhere show team spirit.'},
+  {id:5,type:'A',image:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=640',title:'Iconic Night',celebrity:'Billie Eilish',text:'Billie fans go wild at concert event.'},
+  {id:6,type:'B',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',text:'',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'Credit: mj.vishal / Instagram'}
 ];
 
 let currentPost=null,lastViewedPostId=null;
@@ -144,10 +141,10 @@ function renderGrid(postsArr){
         </div>
       </div>`;
     } else {
-      return `<div class="post-tile typeB" onclick="showPost(${post.id})">
-        <span>${escapeHtml(post.title)}</span>
-        <span>${escapeHtml(post.celebrity)}</span>
-        <div class="credit-link">Credit: ${escapeHtml(post.credit)}</div>
+      return `<div class="post-tile" onclick="showPost(${post.id})" style="background:#d9c5a0; height:110px; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+        <span style="color:#fff; font-weight:700; font-size:1rem;">${escapeHtml(post.title)}</span>
+        <span style="color:#fff; font-size:0.85rem;">${escapeHtml(post.celebrity)}</span>
+        <span style="color:#fff; font-size:0.7rem;">${escapeHtml(post.credit)}</span>
       </div>`;
     }
   }).join('');
@@ -159,24 +156,20 @@ function showPost(id){
   currentPost=post;
   lastViewedPostId=id;
   document.getElementById('mainFeed').style.display='none';
-
-  let contentHtml='';
+  let creditSection='';
   if(post.type==='A'){
-    contentHtml=`<img class="tile-img single" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
-      <div class="celebrity-credit">${escapeHtml(post.celebrity)}</div>
-      <div class="post-title">${escapeHtml(post.title)}</div>
-      <div class="post-text">${escapeHtml(post.text)}</div>`;
-  } else {
-    contentHtml=`<div class="post-title">${escapeHtml(post.title)}</div>
-      <div class="celebrity-credit">${escapeHtml(post.celebrity)}</div>
-      <div class="credit-link">Credit: ${escapeHtml(post.credit)}</div>
-      <div class="post-actions"><a href="${escapeHtml(post.externalLink)}" target="_blank">Check this out</a></div>`;
+    creditSection=''; // no credits
+  } else if(post.type==='B'){
+    creditSection=`<div class="credit">Check this out: <a href="${escapeHtml(post.externalLink)}" target="_blank" rel="noopener">Link</a></div>`;
   }
-
   document.getElementById('singlePostView').innerHTML=`
     <button class="back-btn" onclick="goBack()">← Back</button>
     <div class="post-card">
-      ${contentHtml}
+      ${post.type==='A'?`<img class="tile-img single" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">`:''}
+      <div class="celebrity-credit">${escapeHtml(post.celebrity)}</div>
+      <div class="post-title">${escapeHtml(post.title)}</div>
+      ${creditSection}
+      <div class="post-text">${escapeHtml(post.text)}</div>
     </div>
     <div class="similar-posts-section">
       <div class="similar-posts-title">Similar posts:</div>
@@ -189,20 +182,20 @@ function showPost(id){
 function goBack(){ document.getElementById('mainFeed').style.display='flex'; document.getElementById('singlePostView').style.display='none'; }
 
 function renderSimilarPosts(currentId){
-  return posts.filter(p=>p.id!==currentId).map(post=>{
-    if(post.type==='A'){
-      return `<div class="similar-post-card" onclick="showPost(${post.id})">
-        <img class="similar-thumb" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
+  return posts.filter(p=>p.id!==currentId).map(p=>{
+    if(p.type==='A'){
+      return `<div class="similar-post-card" onclick="showPost(${p.id})">
+        <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
         <div class="tile-overlay">
-          <span>${escapeHtml(post.title)}</span>
-          <span>${escapeHtml(post.celebrity)}</span>
+          <span>${escapeHtml(p.title)}</span>
+          <span>${escapeHtml(p.celebrity)}</span>
         </div>
       </div>`;
     } else {
-      return `<div class="similar-post-card typeB" onclick="showPost(${post.id})">
-        <span>${escapeHtml(post.title)}</span>
-        <span>${escapeHtml(post.celebrity)}</span>
-        <div class="credit-link">Credit: ${escapeHtml(post.credit)}</div>
+      return `<div class="similar-post-card" onclick="showPost(${p.id})" style="background:#d9c5a0; height:110px; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+        <span style="color:#fff; font-weight:700; font-size:1rem;">${escapeHtml(p.title)}</span>
+        <span style="color:#fff; font-size:0.85rem;">${escapeHtml(p.celebrity)}</span>
+        <span style="color:#fff; font-size:0.7rem;">${escapeHtml(p.credit)}</span>
       </div>`;
     }
   }).join('');
@@ -210,6 +203,7 @@ function renderSimilarPosts(currentId){
 
 function escapeHtml(str){ if(!str && str!==0) return ''; return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
 
+// Search functionality
 const searchInput=document.getElementById('searchBar');
 let searchTimer=null;
 if(searchInput){ searchInput.addEventListener('keyup',()=>{
@@ -230,10 +224,10 @@ if(searchInput){ searchInput.addEventListener('keyup',()=>{
             </div>
           </div>`;
         } else {
-          return `<div class="similar-post-card typeB" onclick="showPost(${p.id})">
-            <span>${escapeHtml(p.title)}</span>
-            <span>${escapeHtml(p.celebrity)}</span>
-            <div class="credit-link">Credit: ${escapeHtml(p.credit)}</div>
+          return `<div class="similar-post-card" onclick="showPost(${p.id})" style="background:#d9c5a0; height:110px; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+            <span style="color:#fff; font-weight:700; font-size:1rem;">${escapeHtml(p.title)}</span>
+            <span style="color:#fff; font-size:0.85rem;">${escapeHtml(p.celebrity)}</span>
+            <span style="color:#fff; font-size:0.7rem;">${escapeHtml(p.credit)}</span>
           </div>`;
         }
       }).join(''); }
@@ -245,5 +239,3 @@ document.addEventListener('DOMContentLoaded',()=>{ renderGrid(posts); });
 </script>
 </body>
 </html>
- 
-   
