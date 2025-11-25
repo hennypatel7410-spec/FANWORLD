@@ -16,7 +16,7 @@ input, textarea, select, button { font-size: 16px; }
 #searchBar { padding: 8px 14px; font-size: 1rem; border-radius: 7px; border: 1px solid #bbb; width: 220px; transition: border-color 0.2s; outline: none; background: #fff;}
 #searchBar:focus { border-color: #b69967; }
 .container { padding: 28px 14px; max-width: 940px; margin: 28px auto 0 auto; background: #fff; border-radius: 14px; min-height: 330px; }
-.main-feed-flex { display: flex; flex-direction: row; align-items: flex-start; gap: 20px; position: relative; min-height: 330px; background: #fff'; }
+.main-feed-flex { display: flex; flex-direction: row; align-items: flex-start; gap: 20px; position: relative; min-height: 330px; background: #fff; }
 
 /* Policy modal */
 #policyModal { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9999; display: flex; align-items: center; justify-content: center; }
@@ -108,17 +108,15 @@ agreeBox.addEventListener('change',()=>{agreeBtn.disabled=!agreeBox.checked;});
 agreeBtn.addEventListener('click',()=>{closePolicy();});
 window.addEventListener('DOMContentLoaded',()=>{openPolicy();});
 
-// Posts array (Post A + Post B + new Post Type A)
+// Posts array (latest post added at top)
 const posts=[
+  {id:20,type:'A', image:'https://i.imgur.com/rSxe36w.jpeg', title:"Tanya's dimples have their own fanbase", celebrity:'Tanya Mittal', text:'Her dimples truly have their own sweet fanbase!'},
   {id:1,type:'A',image:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640',title:'Cheer Squad',celebrity:'Taylor Swift',text:'Swifties unite at the world tour!'},
   {id:3,type:'A',image:'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=640',title:'Rock On',celebrity:'Beyoncé',text:'A sea of lights from Queen Bey\'s fans!'},
   {id:4,type:'A',image:'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=640',title:'Football Fever',celebrity:'Lionel Messi',text:'Messi fans everywhere show team spirit.'},
   {id:5,type:'A',image:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=640',title:'Iconic Night',celebrity:'Billie Eilish',text:'Billie fans go wild at concert event.'},
   {id:6,type:'B',image:'https://via.placeholder.com/640x480.png?text=Instagram+Screenshot',title:'Amazing Reel',celebrity:'Charli D’Amelio',text:'Check this out on Instagram!',externalLink:'https://www.instagram.com/p/CODE123/'},
-  {id:7,type:'B',image:'https://via.placeholder.com/640x480.png?text=TikTok+Screenshot',title:'Viral Dance',celebrity:'Addison Rae',text:'Watch the original on TikTok!',externalLink:'https://www.tiktok.com/@addison/video/1234567890'},
-  
-  // NEW POST TYPE A — Tanya Mittal
-  {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!'}
+  {id:7,type:'B',image:'https://via.placeholder.com/640x480.png?text=TikTok+Screenshot',title:'Viral Dance',celebrity:'Addison Rae',text:'Watch the original on TikTok!',externalLink:'https://www.tiktok.com/@addison/video/1234567890'}
 ];
 
 let currentPost=null,lastViewedPostId=null;
@@ -142,9 +140,7 @@ function showPost(id){
   currentPost=post;
   lastViewedPostId=id;
   document.getElementById('mainFeed').style.display='none';
-  const creditSection=post.type==='A'
-    ? ''
-    : `<div class="credit">Check this out: <a href="${escapeHtml(post.externalLink)}" target="_blank" rel="noopener">Link</a></div>`;
+  const creditSection=post.type==='A' ? '' : `<div class="credit">Check this out: <a href="${escapeHtml(post.externalLink)}" target="_blank" rel="noopener">Link</a></div>`;
   document.getElementById('singlePostView').innerHTML=`
     <button class="back-btn" onclick="goBack()">← Back</button>
     <div class="post-card">
@@ -170,7 +166,7 @@ function renderSimilarPosts(currentId){
       <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
       <div class="tile-overlay">
         <span>${escapeHtml(p.title)}</span>
-        <span>${escapeHtml(post.celebrity)}</span>
+        <span>${escapeHtml(p.celebrity)}</span>
       </div>
     </div>
   `).join('');
@@ -178,7 +174,33 @@ function renderSimilarPosts(currentId){
 
 function escapeHtml(str){ if(!str && str!==0) return ''; return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
 
+// Search for main feed & similar posts
+const searchInput=document.getElementById('searchBar');
+let searchTimer=null;
+if(searchInput){ searchInput.addEventListener('keyup',()=>{
+  clearTimeout(searchTimer);
+  searchTimer=setTimeout(()=>{
+    const query=searchInput.value.toLowerCase();
+    const filtered=posts.filter(p=>p.title.toLowerCase().includes(query)||p.celebrity.toLowerCase().includes(query));
+    if(document.getElementById('mainFeed').style.display!=='none'){ renderGrid(filtered); }
+    if(document.getElementById('singlePostView').style.display!=='none'){
+      const similarList=document.querySelector('.similar-posts-list');
+      if(similarList){ similarList.innerHTML=filtered.filter(p=>p.id!==lastViewedPostId).map(p=>`
+        <div class="similar-post-card" onclick="showPost(${p.id})">
+          <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
+          <div class="tile-overlay">
+            <span>${escapeHtml(p.title)}</span>
+            <span>${escapeHtml(p.celebrity)}</span>
+          </div>
+        </div>
+      `).join(''); }
+    }
+  },300);
+}); }
+
 document.addEventListener('DOMContentLoaded',()=>{ renderGrid(posts); });
 </script>
 </body>
 </html>
+
+      
