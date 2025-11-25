@@ -1,4 +1,3 @@
-<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -17,29 +16,17 @@ input, textarea, select, button { font-size: 16px; }
 #searchBar { padding: 8px 14px; font-size: 1rem; border-radius: 7px; border: 1px solid #bbb; width: 220px; transition: border-color 0.2s; outline: none; background: #fff;}
 #searchBar:focus { border-color: #b69967; }
 .container { padding: 28px 14px; max-width: 940px; margin: 28px auto 0 auto; background: #fff; border-radius: 14px; min-height: 330px; }
-
-/* Main feed flex layout - expanded */
-.main-feed-flex {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 20px;
-  position: relative;
-  min-height: auto; /* allow height to grow */
-  background: #fff;
-}
-.posts-column { flex: 1 1 65%; }
-.welcome-box { flex: 0 0 30%; background: #f9f7f1; padding: 16px; border-radius: 12px; margin-top: 0; }
+.main-feed-flex { display: flex; flex-direction: row; align-items: flex-start; gap: 20px; position: relative; min-height: 330px; background: #fff; }
 
 /* Policy modal */
 #policyModal { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-#policyModal .modal-inner { background: #fff; padding: 20px; border-radius: 12px; max-width: 92vw; width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); }
+#policyModal .modal-inner { background: #fff; padding: 20px; border-radius: 12px; max-width: 92vw; width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); font-family: 'Barlow', sans-serif; }
 #policyModal h2 { margin-top: 0; font-size: 1.05rem; }
 #policyModal p { margin-bottom: 12px; font-size: 0.98rem; }
 #policyModal label { display: flex; align-items: center; gap: 8px; font-size: 0.98rem; }
 #policyModal button { padding: 9px 16px; border-radius: 8px; background: #b69967; color: #fff; border: none; font-weight: 700; cursor: pointer; }
 
-/* Post tile and card CSS */
+/* Post tile and card CSS for Pinterest-style layout */
 .post-tile, .similar-post-card {
   position: relative;
   cursor: pointer;
@@ -49,46 +36,75 @@ input, textarea, select, button { font-size: 16px; }
   display: inline-block;
   width: 100%;
 }
-.tile-img, .similar-thumb { width: 100%; height: 220px; object-fit: cover; border-radius: 12px; }
-.tile-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.55); color: #fff; padding: 8px 10px; line-height: 1.2; }
+/* Force all images (Post A & B) to same height */
+.tile-img, .similar-thumb {
+  width: 100%;
+  height: 220px; /* fixed height for uniformity */
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* Overlay at bottom of image */
+.tile-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  padding: 8px 10px;
+  line-height: 1.2;
+}
 .tile-overlay span:first-child { font-weight: 700; font-size: 1rem; display: block; }
 .tile-overlay span:last-child { font-weight: 400; font-size: 0.85rem; display: block; }
 
-/* Post card */
 .post-card { border-radius: 12px; overflow: hidden; background: #fefefe; padding: 12px; box-shadow: 0 2px 10px #0001; }
 .back-btn { background: #b69967; color: #fff; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; margin-bottom: 12px; }
 
-/* Single post full image */
-.post-card img.single { width: 100%; height: auto; max-height: 80vh; object-fit: contain; border-radius: 12px; }
-
 /* Masonry layout */
 #postsList, .similar-posts-list { column-count: 3; column-gap: 16px; }
-@media(max-width:1020px){ #postsList, .similar-posts-list { column-count: 2; } }
-@media(max-width:600px){ #postsList, .similar-posts-list { column-count: 1; } }
+@media(max-width: 1020px){ #postsList, .similar-posts-list { column-count: 2; } }
+@media(max-width: 600px){ #postsList, .similar-posts-list { column-count: 1; } }
 
-/* Post type B rectangle smaller than A */
+/* Prevent Post B from splitting across columns */
 .post-b-box {
-  background: #d6c9b3;
-  height: 110px; /* half of Post A height */
+  break-inside: avoid;
+  page-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  margin-bottom: 16px;
+}
+
+/* Post B rectangle box style */
+.post-b-box {
+  background: #f5e8d9;
+  color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 110px; /* half the size of Post A */
   border-radius: 12px;
+  padding: 10px;
+  font-weight: 700;
   text-align: center;
-  color: #fff;
-  padding: 8px;
-  cursor: pointer;
+  position: relative;
 }
-.post-b-box .credit { font-size: 0.7rem; margin-top: 4px; }
+.post-b-credit {
+  font-size: 0.7rem;
+  color: #fff;
+  position: absolute;
+  bottom: 6px;
+  font-weight: 400;
+}
 </style>
 </head>
 <body>
 
+<!-- FanWorld Policy Modal -->
 <div id="policyModal" aria-hidden="false">
   <div class="modal-inner">
     <h2>FanWorld Policy</h2>
-    <p>I agree to the FanWorld Policy: All content is properly credited, shared only for sweet entertainment and enjoyment. <strong>Sweet enjoyment is the goal!</strong></p>
+    <p>I agree to the FanWorld Policy: All content is properly credited, shared only for sweet entertainment and enjoyment, not intended to harm anyone or any platform. I understand I can only access FanWorld after agreeing. <strong>Sweet enjoyment is the goal!</strong></p>
     <div style="margin-bottom:12px;">
       <label><input type="checkbox" id="agreeBox"> I agree to the FanWorld Policy.</label>
     </div>
@@ -123,33 +139,36 @@ agreeBox.addEventListener('change',()=>{agreeBtn.disabled=!agreeBox.checked;});
 agreeBtn.addEventListener('click',()=>{closePolicy();});
 window.addEventListener('DOMContentLoaded',()=>{openPolicy();});
 
+// Posts array (Post A + Post B)
 const posts=[
-  {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!'},
-  {id:1,type:'A',image:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640',title:'Cheer Squad',celebrity:'Taylor Swift',text:'Swifties unite at the world tour!'},
-  {id:3,type:'A',image:'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=640',title:'Rock On',celebrity:'Beyoncé',text:'A sea of lights from Queen Bey\'s fans!'},
-  {id:4,type:'A',image:'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=640',title:'Football Fever',celebrity:'Lionel Messi',text:'Messi fans everywhere show team spirit.'},
-  {id:5,type:'A',image:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=640',title:'Iconic Night',celebrity:'Billie Eilish',text:'Billie fans go wild at concert event.'},
-  {id:7,type:'B',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'Credit: mj.vishal, Instagram'}
+  {id:1,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!'},
+  {id:2,type:'A',image:'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=640',title:'Rock On',celebrity:'Beyoncé',text:'A sea of lights from Queen Bey\'s fans!'},
+  {id:3,type:'A',image:'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=640',title:'Football Fever',celebrity:'Lionel Messi',text:'Messi fans everywhere show team spirit.'},
+  {id:4,type:'A',image:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=640',title:'Iconic Night',celebrity:'Billie Eilish',text:'Billie fans go wild at concert event.'},
+
+  // Post B rectangle
+  {id:5,type:'B',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'Credit: mj.vishal, Instagram'}
 ];
 
 let currentPost=null,lastViewedPostId=null;
 
 function renderGrid(postsArr){
   const postsList=document.getElementById('postsList');
-  postsList.innerHTML=postsArr.map(post=>{
-    if(post.type==='A'){
+  // newest posts on top
+  postsList.innerHTML=postsArr.slice().reverse().map(post=>{
+    if(post.type==='B'){
+      return `<div class="post-tile post-b-box" onclick="showPost(${post.id})">
+        <div>${escapeHtml(post.title)}</div>
+        <div>${escapeHtml(post.celebrity)}</div>
+        <div class="post-b-credit">${escapeHtml(post.credit)}</div>
+      </div>`;
+    } else {
       return `<div class="post-tile" onclick="showPost(${post.id})">
         <img class="tile-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
         <div class="tile-overlay">
           <span>${escapeHtml(post.title)}</span>
           <span>${escapeHtml(post.celebrity)}</span>
         </div>
-      </div>`;
-    } else {
-      return `<div class="post-b-box" onclick="window.open('${post.externalLink}','_blank')">
-        <div>${escapeHtml(post.title)}</div>
-        <div>${escapeHtml(post.celebrity)}</div>
-        <div class="credit">${escapeHtml(post.credit)}</div>
       </div>`;
     }
   }).join('');
@@ -161,12 +180,23 @@ function showPost(id){
   currentPost=post;
   lastViewedPostId=id;
   document.getElementById('mainFeed').style.display='none';
-
-  const creditSection=post.type==='A'?'':`<div class="credit">Check this out: <a href="${escapeHtml(post.externalLink)}" target="_blank" rel="noopener">${escapeHtml(post.credit)}</a></div>`;
+  let creditSection='';
+  let contentHtml='';
+  if(post.type==='A'){
+    creditSection='';
+    contentHtml=`<img class="tile-img single" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">`;
+  } else {
+    creditSection=`<div class="credit">${escapeHtml(post.credit)}</div>`;
+    contentHtml=`<div class="post-b-box" style="height:220px;">
+      <div>${escapeHtml(post.title)}</div>
+      <div>${escapeHtml(post.celebrity)}</div>
+      <div class="post-b-credit">${escapeHtml(post.credit)}</div>
+    </div>`;
+  }
   document.getElementById('singlePostView').innerHTML=`
     <button class="back-btn" onclick="goBack()">← Back</button>
     <div class="post-card">
-      <img class="tile-img single" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
+      ${contentHtml}
       <div class="celebrity-credit">${escapeHtml(post.celebrity)}</div>
       <div class="post-title">${escapeHtml(post.title)}</div>
       ${creditSection}
@@ -183,27 +213,28 @@ function showPost(id){
 function goBack(){ document.getElementById('mainFeed').style.display='flex'; document.getElementById('singlePostView').style.display='none'; }
 
 function renderSimilarPosts(currentId){
-  return posts.filter(p=>p.id!==currentId).map(p=>{
-    if(p.type==='A'){
-      return `<div class="similar-post-card" onclick="showPost(${p.id})">
-        <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
-        <div class="tile-overlay">
-          <span>${escapeHtml(p.title)}</span>
-          <span>${escapeHtml(p.celebrity)}</span>
-        </div>
+  return posts.filter(p=>p.id!==currentId).slice().reverse().map(post=>{
+    if(post.type==='B'){
+      return `<div class="similar-post-card post-b-box" onclick="showPost(${post.id})">
+        <div>${escapeHtml(post.title)}</div>
+        <div>${escapeHtml(post.celebrity)}</div>
+        <div class="post-b-credit">${escapeHtml(post.credit)}</div>
       </div>`;
     } else {
-      return `<div class="post-b-box" onclick="window.open('${p.externalLink}','_blank')">
-        <div>${escapeHtml(p.title)}</div>
-        <div>${escapeHtml(p.celebrity)}</div>
-        <div class="credit">${escapeHtml(p.credit)}</div>
+      return `<div class="similar-post-card" onclick="showPost(${post.id})">
+        <img class="similar-thumb" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
+        <div class="tile-overlay">
+          <span>${escapeHtml(post.title)}</span>
+          <span>${escapeHtml(post.celebrity)}</span>
+        </div>
       </div>`;
     }
   }).join('');
 }
 
-function escapeHtml(str){ if(!str && str!==0) return ''; return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#39;"); }
+function escapeHtml(str){ if(!str && str!==0) return ''; return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
 
+// Search for main feed & similar posts
 const searchInput=document.getElementById('searchBar');
 let searchTimer=null;
 if(searchInput){ searchInput.addEventListener('keyup',()=>{
@@ -214,20 +245,20 @@ if(searchInput){ searchInput.addEventListener('keyup',()=>{
     if(document.getElementById('mainFeed').style.display!=='none'){ renderGrid(filtered); }
     if(document.getElementById('singlePostView').style.display!=='none'){
       const similarList=document.querySelector('.similar-posts-list');
-      if(similarList){ similarList.innerHTML=filtered.filter(p=>p.id!==lastViewedPostId).map(p=>{
-        if(p.type==='A'){
-          return `<div class="similar-post-card" onclick="showPost(${p.id})">
-            <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
-            <div class="tile-overlay">
-              <span>${escapeHtml(p.title)}</span>
-              <span>${escapeHtml(p.celebrity)}</span>
-            </div>
+      if(similarList){ similarList.innerHTML=filtered.filter(p=>p.id!==lastViewedPostId).map(post=>{
+        if(post.type==='B'){
+          return `<div class="similar-post-card post-b-box" onclick="showPost(${post.id})">
+            <div>${escapeHtml(post.title)}</div>
+            <div>${escapeHtml(post.celebrity)}</div>
+            <div class="post-b-credit">${escapeHtml(post.credit)}</div>
           </div>`;
         } else {
-          return `<div class="post-b-box" onclick="window.open('${p.externalLink}','_blank')">
-            <div>${escapeHtml(p.title)}</div>
-            <div>${escapeHtml(p.celebrity)}</div>
-            <div class="credit">${escapeHtml(p.credit)}</div>
+          return `<div class="similar-post-card" onclick="showPost(${post.id})">
+            <img class="similar-thumb" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
+            <div class="tile-overlay">
+              <span>${escapeHtml(post.title)}</span>
+              <span>${escapeHtml(post.celebrity)}</span>
+            </div>
           </div>`;
         }
       }).join(''); }
@@ -239,6 +270,3 @@ document.addEventListener('DOMContentLoaded',()=>{ renderGrid(posts); });
 </script>
 </body>
 </html>
-
-  
-
