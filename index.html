@@ -13,13 +13,12 @@ body, header, input, .container, .main-feed-flex, .posts-column, .welcome-box, .
 body { background: #fff; margin: 0; color: #222; }
 header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background: #e0d7c3; color: #222; box-shadow: 0 2px 10px #0001; }
 #siteTitle { font-weight: 700; font-size: 1.6rem; letter-spacing: 0.04em; }
-/* Ensure inputs are at least 16px on small screens to prevent iOS auto-zoom */
 input, textarea, select, button { font-size: 16px; }
 #searchBar { padding: 8px 14px; font-size: 1rem; border-radius: 7px; border: 1px solid #bbb; width: 220px; transition: border-color 0.2s; outline: none; background: #fff;}
 #searchBar:focus { border-color: #b69967; }
 .container { padding: 28px 14px; max-width: 940px; margin: 28px auto 0 auto; background: #fff; border-radius: 14px; min-height: 330px; }
 .main-feed-flex { display: flex; flex-direction: row; align-items: flex-start; gap: 20px; position: relative; min-height: 330px; background: #fff; }
-/* Policy modal specific styles (responsive) */
+/* Policy modal */
 #policyModal { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9999; display: flex; align-items: center; justify-content: center; }
 #policyModal .modal-inner { background: #fff; padding: 20px; border-radius: 12px; max-width: 92vw; width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); font-family: 'Barlow', sans-serif; }
 #policyModal h2 { margin-top: 0; font-size: 1.05rem; }
@@ -45,7 +44,7 @@ input, textarea, select, button { font-size: 16px; }
   border-radius: 12px;
 }
 
-/* Overlay at the bottom of image */
+/* Overlay at bottom of image */
 .tile-overlay {
   position: absolute;
   bottom: 0;
@@ -54,47 +53,24 @@ input, textarea, select, button { font-size: 16px; }
   background: rgba(0,0,0,0.55);
   color: #fff;
   padding: 8px 10px;
-  font-family: 'Barlow', sans-serif;
   line-height: 1.2;
 }
 
-.tile-overlay span:first-child {
-  font-weight: 700;  /* title bold */
-  font-size: 1rem;
-  display: block;
-}
-
-.tile-overlay span:last-child {
-  font-weight: 400;  /* celebrity lighter */
-  font-size: 0.85rem;
-  display: block;
-}
+.tile-overlay span:first-child { font-weight: 700; font-size: 1rem; display: block; }
+.tile-overlay span:last-child { font-weight: 400; font-size: 0.85rem; display: block; }
 
 .post-card { border-radius: 12px; overflow: hidden; background: #fefefe; padding: 12px; box-shadow: 0 2px 10px #0001; }
 .back-btn { background: #b69967; color: #fff; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; margin-bottom: 12px; }
 
-/* Masonry layout using CSS columns */
-#postsList, .similar-posts-list {
-  column-count: 3;
-  column-gap: 16px;
-}
+/* Masonry layout */
+#postsList, .similar-posts-list { column-count: 3; column-gap: 16px; }
 
-/* Responsive */
-@media(max-width: 1020px){ 
-  .container{max-width:99vw;} 
-  #postsList, .similar-posts-list { column-count: 2; }
-}
-@media(max-width: 600px){ 
-  .container{padding:10px 12px;} 
-  .post-card, .similar-post-card{max-width:98vw;} 
-  .similar-posts-section{width:100vw;margin-left:-5vw;} 
-  .similar-thumb{height:60px;} 
-  #searchBar{width:140px;} 
-  #postsList, .similar-posts-list { column-count: 1; }
-}
+@media(max-width: 1020px){ #postsList, .similar-posts-list { column-count: 2; } }
+@media(max-width: 600px){ #postsList, .similar-posts-list { column-count: 1; } }
 </style>
 </head>
 <body>
+
 <!-- FanWorld Policy Modal -->
 <div id="policyModal" aria-hidden="false">
   <div class="modal-inner">
@@ -124,166 +100,4 @@ input, textarea, select, button { font-size: 16px; }
 
 <div class="container" style="display:none;" id="singlePostView"></div>
 
-<script>
-// --- FanWorld Policy Modal JS ---
-const policyModal = document.getElementById('policyModal');
-const agreeBox = document.getElementById('agreeBox');
-const agreeBtn = document.getElementById('agreeBtn');
-
-function openPolicy(){
-  policyModal.style.display = 'flex';
-  policyModal.setAttribute('aria-hidden','false');
-  document.body.style.overflow = 'hidden';
-}
-function closePolicy(){
-  policyModal.style.display = 'none';
-  policyModal.setAttribute('aria-hidden','true');
-  document.body.style.overflow = '';
-}
-
-agreeBox.addEventListener('change', function() {
-  agreeBtn.disabled = !agreeBox.checked;
-});
-agreeBtn.addEventListener('click', function() {
-  closePolicy();
-});
-
-window.addEventListener('DOMContentLoaded', function() {
-  openPolicy();
-});
-
-// --- FanWorld main JS ---
-const posts = [
-  // Post A
-  {id: 1, type:'A', image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640', title: 'Cheer Squad', celebrity: 'Taylor Swift', text: 'Swifties unite at the world tour!', credit: 'Photo by Alex Brown', creditUrl: 'https://unsplash.com/photos/1506744038136-46273834b3fb'},
-  {id: 3, type:'A', image: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=640', title: 'Rock On', celebrity: 'Beyoncé', text: 'A sea of lights from Queen Bey\'s fans!', credit: 'Photo by Jessica Wu'},
-  {id: 4, type:'A', image: 'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=640', title: 'Football Fever', celebrity: 'Lionel Messi', text: 'Messi fans everywhere show team spirit.', credit: 'Unsplash / UnsplashSports', creditUrl:'https://unsplash.com/'},
-  {id: 5, type:'A', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=640', title: 'Iconic Night', celebrity: 'Billie Eilish', text: 'Billie fans go wild at concert event.', credit: 'Photo by Ben Oliver'},
-
-  // Post B (embedded social media placeholders)
-  { id: 6, type:'B', image: 'https://via.placeholder.com/640x480.png?text=Instagram+Screenshot', title: 'Amazing Reel', celebrity: 'Charli D’Amelio', text: 'Check this out on Instagram!', externalLink: 'https://www.instagram.com/p/CODE123/' },
-  { id: 7, type:'B', image: 'https://via.placeholder.com/640x480.png?text=TikTok+Screenshot', title: 'Viral Dance', celebrity: 'Addison Rae', text: 'Watch the original on TikTok!', externalLink: 'https://www.tiktok.com/@addison/video/1234567890' }
-];
-
-let currentPost = null;
-let lastViewedPostId = null;
-
-function renderGrid(postsArr){
-  const postsList = document.getElementById('postsList');
-  postsList.innerHTML = postsArr.map(post => `
-    <div class="post-tile" onclick="showPost(${post.id})">
-      <img class="tile-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
-      <div class="tile-overlay">
-        <span>${escapeHtml(post.title)}</span>
-        <span>${escapeHtml(post.celebrity)}</span>
-      </div>
-    </div>
-  `).join('');
-}
-
-function showPost(id){
-  const post = posts.find(p=>p.id===id);
-  if(!post) return;
-  currentPost = post;
-  lastViewedPostId = id;
-  document.getElementById('mainFeed').style.display='none';
-
-  const creditSection = post.type==='A' 
-    ? `<div class="credit">Credit: ${post.creditUrl ? `<a href="${escapeHtml(post.creditUrl)}" target="_blank" rel="noopener">${escapeHtml(post.credit)}</a>` : escapeHtml(post.credit || 'Unknown')}</div>` 
-    : `<div class="credit">Check this out: <a href="${escapeHtml(post.externalLink)}" target="_blank" rel="noopener">Link</a></div>`;
-
-  document.getElementById('singlePostView').innerHTML = `
-    <button class="back-btn" onclick="goBack()">← Back</button>
-    <div class="post-card">
-      <img class="tile-img single" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
-      <div class="celebrity-credit">${escapeHtml(post.celebrity)}</div>
-      <div class="post-title">${escapeHtml(post.title)}</div>
-      ${creditSection}
-      <div class="post-text">${escapeHtml(post.text)}</div>
-    </div>
-    <div class="similar-posts-section">
-      <div class="similar-posts-title">Similar posts:</div>
-      <div class="similar-posts-list">
-        ${renderSimilarPosts(post.id)}
-      </div>
-    </div>
-  `;
-  document.getElementById('singlePostView').style.display='block';
-}
-
-function goBack(){
-  document.getElementById('mainFeed').style.display='flex';
-  document.getElementById('singlePostView').style.display='none';
-}
-
-function renderSimilarPosts(currentId){
-  return posts.filter(p=>p.id!==currentId).map(p=> `
-    <div class="similar-post-card" onclick="showPost(${p.id})">
-      <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
-      <div class="tile-overlay">
-        <span>${escapeHtml(p.title)}</span>
-        <span>${escapeHtml(p.celebrity)}</span>
-      </div>
-    </div>
-  `).join('');
-}
-
-function escapeHtml(str) {
-  if (!str && str !== 0) return '';
-  return String(str)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-}
-
-// --- Search Functionality (works in main feed & similar posts) ---
-const searchInput = document.getElementById('searchBar');
-let searchTimer = null;
-
-if (searchInput) {
-  searchInput.addEventListener('keyup', () => {
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => {
-      const query = searchInput.value.toLowerCase();
-      const filtered = posts.filter(p =>
-        p.title.toLowerCase().includes(query) ||
-        p.celebrity.toLowerCase().includes(query)
-      );
-
-      // Update main feed if visible
-      const mainFeed = document.getElementById('postsList');
-      if(document.getElementById('mainFeed').style.display !== 'none'){
-        renderGrid(filtered);
-      }
-
-      // Update similar posts if single post view is visible
-      const singlePostView = document.getElementById('singlePostView');
-      if(singlePostView.style.display !== 'none'){
-        const similarList = singlePostView.querySelector('.similar-posts-list');
-        if(similarList){
-          similarList.innerHTML = filtered.filter(p => p.id !== lastViewedPostId).map(p=> `
-            <div class="similar-post-card" onclick="showPost(${p.id})">
-              <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
-              <div class="tile-overlay">
-                <span>${escapeHtml(p.title)}</span>
-                <span>${escapeHtml(p.celebrity)}</span>
-              </div>
-            </div>
-          `).join('');
-        }
-      }
-
-    }, 300);
-  });
-}
-
-// Render grid on load
-document.addEventListener('DOMContentLoaded', () => {
-  renderGrid(posts);
-});
-</script>
-</body>
-</html>
-
+<scr
