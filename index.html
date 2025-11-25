@@ -154,11 +154,15 @@ window.addEventListener('DOMContentLoaded', function() {
 
 // --- FanWorld main JS ---
 const posts = [
-  {id: 1, image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640', title: 'Cheer Squad', celebrity: 'Taylor Swift', text: 'Swifties unite at the world tour!', credit: 'Photo by Alex Brown', creditUrl: 'https://unsplash.com/photos/1506744038136-46273834b3fb'},
-  {id: 2, image: 'https://images.unsplash.com/photo-1504652623000-1801eb50e74a?w=640', title: 'Victory Fans', celebrity: 'Cristiano Ronaldo', text: 'Real Madrid fans celebrating big wins!', credit: 'Getty Images', creditUrl:'https://gettyimages.com/'},
-  {id: 3, image: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=640', title: 'Rock On', celebrity: 'Beyoncé', text: 'A sea of lights from Queen Bey\'s fans!', credit: 'Photo by Jessica Wu'},
-  {id: 4, image: 'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=640', title: 'Football Fever', celebrity: 'Lionel Messi', text: 'Messi fans everywhere show team spirit.', credit: 'Unsplash / UnsplashSports', creditUrl:'https://unsplash.com/'},
-  {id: 5, image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=640', title: 'Iconic Night', celebrity: 'Billie Eilish', text: 'Billie fans go wild at concert event.', credit: 'Photo by Ben Oliver'}
+  // Post A
+  {id: 1, type:'A', image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640', title: 'Cheer Squad', celebrity: 'Taylor Swift', text: 'Swifties unite at the world tour!', credit: 'Photo by Alex Brown', creditUrl: 'https://unsplash.com/photos/1506744038136-46273834b3fb'},
+  {id: 3, type:'A', image: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=640', title: 'Rock On', celebrity: 'Beyoncé', text: 'A sea of lights from Queen Bey\'s fans!', credit: 'Photo by Jessica Wu'},
+  {id: 4, type:'A', image: 'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=640', title: 'Football Fever', celebrity: 'Lionel Messi', text: 'Messi fans everywhere show team spirit.', credit: 'Unsplash / UnsplashSports', creditUrl:'https://unsplash.com/'},
+  {id: 5, type:'A', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=640', title: 'Iconic Night', celebrity: 'Billie Eilish', text: 'Billie fans go wild at concert event.', credit: 'Photo by Ben Oliver'},
+
+  // Post B (embedded social media)
+  {id: 6, type:'B', image: 'https://via.placeholder.com/640x360.png?text=Instagram+Screenshot', title: 'Amazing Reel', celebrity: 'Charli D’Amelio', text: 'Check this out on Instagram!', externalLink: 'https://www.instagram.com/p/CODE123/'},
+  {id: 7, type:'B', image: 'https://via.placeholder.com/640x360.png?text=TikTok+Screenshot', title: 'Viral Dance', celebrity: 'Addison Rae', text: 'Watch the original on TikTok!', externalLink: 'https://www.tiktok.com/@addison/video/1234567890'}
 ];
 
 let currentPost = null;
@@ -183,13 +187,18 @@ function showPost(id){
   currentPost = post;
   lastViewedPostId = id;
   document.getElementById('mainFeed').style.display='none';
+
+  const creditSection = post.type==='A' 
+    ? `<div class="credit">Credit: ${post.creditUrl ? `<a href="${escapeHtml(post.creditUrl)}" target="_blank" rel="noopener">${escapeHtml(post.credit)}</a>` : escapeHtml(post.credit || 'Unknown')}</div>` 
+    : `<div class="credit">Check this out: <a href="${escapeHtml(post.externalLink)}" target="_blank" rel="noopener">Link</a></div>`;
+
   document.getElementById('singlePostView').innerHTML = `
     <button class="back-btn" onclick="goBack()">← Back</button>
     <div class="post-card">
       <img class="tile-img single" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
       <div class="celebrity-credit">${escapeHtml(post.celebrity)}</div>
       <div class="post-title">${escapeHtml(post.title)}</div>
-      <div class="credit">Credit: ${post.creditUrl ? `<a href="${escapeHtml(post.creditUrl)}" target="_blank" rel="noopener">${escapeHtml(post.credit)}</a>` : escapeHtml(post.credit || 'Unknown')}</div>
+      ${creditSection}
       <div class="post-text">${escapeHtml(post.text)}</div>
     </div>
     <div class="similar-posts-section">
@@ -229,7 +238,7 @@ function escapeHtml(str) {
     .replaceAll("'", '&#39;');
 }
 
-// --- Search Functionality (now works in main feed & similar posts) ---
+// --- Search Functionality (works in main feed & similar posts) ---
 const searchInput = document.getElementById('searchBar');
 let searchTimer = null;
 
@@ -277,3 +286,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+   
