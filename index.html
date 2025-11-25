@@ -25,26 +25,47 @@ input, textarea, select, button { font-size: 16px; }
 #searchBar:focus { border-color: #b69967; }
 .container { padding: 28px 14px; max-width: 940px; margin: 28px auto 0 auto; background: #fff; border-radius: 14px; min-height: 330px; }
 .main-feed-flex { display: flex; flex-direction: row; align-items: flex-start; gap: 20px; position: relative; min-height: 330px; background: #fff; }
-.posts-column { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
-.welcome-box { flex-basis: 220px; padding: 16px; border-radius: 12px; background: #f7f2eb; }
-.post-tile { position: relative; cursor: pointer; border-radius: 12px; overflow: hidden; }
-.post-tile img { width: 100%; display: block; border-radius: 12px; }
-.tile-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.4); color: #fff; padding: 6px; display: flex; flex-direction: column; gap: 2px; font-size: 0.85em; border-top-left-radius: 12px; border-top-right-radius: 12px;}
-.tile-overlay .title-box { background: rgba(255,255,255,0.9); color: #222; font-weight: 700; padding: 4px 6px; border-radius: 6px; margin-bottom: 2px; display: flex; flex-direction: column; font-size: 0.9em; }
-.tile-overlay .view-more { font-size: 0.65em; margin-top: 2px; }
-.similar-posts-section { margin-top: 20px; }
-.similar-posts-title { font-weight: 700; margin-bottom: 8px; }
-.similar-post-card { border-radius: 10px; overflow: hidden; cursor: pointer; }
-.similar-post-card img { width: 100%; display: block; border-radius: 10px; }
-.credit { font-size: 0.75em; margin-top: 4px; }
-.back-btn { margin-bottom: 12px; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; background: #b69967; color: #fff; font-weight: 700; }
+/* Policy modal specific styles (responsive) */
+#policyModal { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+#policyModal .modal-inner { background: #fff; padding: 20px; border-radius: 12px; max-width: 92vw; width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); font-family: 'Barlow', sans-serif; }
+#policyModal h2 { margin-top: 0; font-size: 1.05rem; }
+#policyModal p { margin-bottom: 12px; font-size: 0.98rem; }
+#policyModal label { display: flex; align-items: center; gap: 8px; font-size: 0.98rem; }
+#policyModal button { padding: 9px 16px; border-radius: 8px; background: #b69967; color: #fff; border: none; font-weight: 700; cursor: pointer; }
 
-@media(max-width:1020px){ .container{max-width:99vw;} }
+/* Grid layout for posts */
+#postsList { display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 16px; }
+
+/* Post tile styles */
+.post-tile { position: relative; cursor: pointer; overflow: hidden; border-radius: 12px; }
+.post-tile img { width: 100%; display: block; border-radius: 12px; }
+.tile-overlay { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.45); color: #fff; padding: 6px; font-size: 0.9rem; display: flex; flex-direction: column; gap: 2px; }
+.tile-overlay .title-box { background: rgba(255,255,255,0.9); color: #222; font-weight: 700; font-size: 1rem; padding: 3px 6px; border-radius: 5px; margin-bottom: 2px; display: inline-block; }
+.tile-overlay .view-more { font-size: 0.65rem; font-weight: 400; opacity: 0.85; }
+
+/* Sidebar adjustments */
+.welcome-box { width: 220px; max-width: 220px; padding: 12px; border-radius: 10px; background: #f9f5f0; font-size: 0.95rem; }
+.welcome-box a { color: #b69967; text-decoration: none; font-weight: 700; }
+
+@media(max-width:1020px){ .container{max-width:99vw;} .welcome-box{width:180px;} }
 @media(max-width:800px){ header{padding:12px 14px;} #siteTitle{font-size:1.4rem;} .main-feed-flex{flex-direction:column;align-items:stretch;gap:12px;} .welcome-box{width:98vw;max-width:400px;margin:0 auto 10px auto;border-radius:12px;} #postsList{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));} #searchBar{width:160px;} }
 @media(max-width:600px){ .container{padding:10px 12px;} .post-card, .similar-post-card{max-width:98vw;} .similar-posts-section{width:100vw;margin-left:-5vw;} .similar-thumb{height:60px;} #searchBar{width:140px;} }
+
 </style>
 </head>
 <body>
+
+<!-- FanWorld Policy Modal -->
+<div id="policyModal" aria-hidden="false">
+  <div class="modal-inner">
+    <h2>FanWorld Policy</h2>
+    <p>I agree to the FanWorld Policy: All content is properly credited, shared only for sweet entertainment and enjoyment, not intended to harm anyone or any platform. I understand I can only access FanWorld after agreeing. <strong>Sweet enjoyment is the goal!</strong></p>
+    <div style="margin-bottom:12px;">
+      <label><input type="checkbox" id="agreeBox"> I agree to the FanWorld Policy.</label>
+    </div>
+    <div style="text-align:right;"><button id="agreeBtn" disabled>Enter FanWorld</button></div>
+  </div>
+</div>
 
 <header>
     <div id="siteTitle">FanWorld</div>
@@ -52,63 +73,133 @@ input, textarea, select, button { font-size: 16px; }
 </header>
 
 <div class="container main-feed-flex" id="mainFeed">
-    <div class="posts-column" id="postsList">
-        <!-- Existing posts will be inserted here via JS -->
+    <div class="posts-column">
+        <div id="postsList"></div>
     </div>
     <div class="welcome-box">
         <h2>Welcome to FanWorld!</h2>
         <p>Browse the latest posts. Click a post to see details!</p>
-        <p><strong>Check this out on Instagram right now!</strong><br>
-        <a href="https://www.instagram.com/" target="_blank">Instagram</a></p>
+        <p><strong>Check this out on Instagram right now!</strong></p>
+        <p><a href="https://www.instagram.com" target="_blank" rel="noopener">Go to Instagram</a></p>
     </div>
 </div>
 
 <div class="container" style="display:none;" id="singlePostView"></div>
 
 <script>
+// Policy modal JS
+const policyModal = document.getElementById('policyModal');
+const agreeBox = document.getElementById('agreeBox');
+const agreeBtn = document.getElementById('agreeBtn');
+
+function openPolicy(){ policyModal.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+function closePolicy(){ policyModal.style.display = 'none'; document.body.style.overflow = ''; }
+
+agreeBox.addEventListener('change', function() { agreeBtn.disabled = !agreeBox.checked; });
+agreeBtn.addEventListener('click', closePolicy);
+window.addEventListener('DOMContentLoaded', function() { openPolicy(); });
+
+// Posts array with new Instagram embed post
 const posts = [
-    {id: 1, image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640', title: 'Cheer Squad', celebrity: 'Taylor Swift', text: 'Swifties unite at the world tour!', credit: 'Photo by Alex Brown', creditUrl: 'https://unsplash.com/photos/1506744038136-46273834b3fb'},
-    {id: 2, image: 'https://images.unsplash.com/photo-1504652623000-1801eb50e74a?w=640', title: 'Victory Fans', celebrity: 'Cristiano Ronaldo', text: 'Real Madrid fans celebrating big wins!', credit: 'Getty Images', creditUrl:'https://gettyimages.com/'},
-    {id: 3, image: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=640', title: 'Rock On', celebrity: 'Beyoncé', text: 'A sea of lights from Queen Bey\'s fans!', credit: 'Photo by Jessica Wu'},
-    {id: 4, image: 'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=640', title: 'Football Fever', celebrity: 'Lionel Messi', text: 'Messi fans everywhere show team spirit.', credit: 'Unsplash / UnsplashSports', creditUrl:'https://unsplash.com/'},
-    {id: 5, image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=640', title: 'Iconic Night', celebrity: 'Billie Eilish', text: 'Billie fans go wild at concert event.', credit: 'Photo by Ben Oliver'},
-    // Nagma's Instagram post embedded
-    {id: 6, embed: true, title: 'Cutie Nagma with the Dilip', celebrity: 'Nagma', embedUrl: 'https://www.instagram.com/p/DRbrs-ojBPP/embed', credit: 'Instagram / Nagma'}
+    {id:1, image:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640', title:'Cheer Squad', celebrity:'Taylor Swift', text:'Swifties unite at the world tour!', credit:'Photo by Alex Brown', creditUrl:'https://unsplash.com/photos/1506744038136-46273834b3fb'},
+    {id:2, image:'https://images.unsplash.com/photo-1504652623000-1801eb50e74a?w=640', title:'Victory Fans', celebrity:'Cristiano Ronaldo', text:'Real Madrid fans celebrating big wins!', credit:'Getty Images', creditUrl:'https://gettyimages.com/'},
+    {id:3, image:'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=640', title:'Rock On', celebrity:'Beyoncé', text:'A sea of lights from Queen Bey\'s fans!', credit:'Photo by Jessica Wu'},
+    {id:4, image:'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=640', title:'Football Fever', celebrity:'Lionel Messi', text:'Messi fans everywhere show team spirit.', credit:'Unsplash / UnsplashSports', creditUrl:'https://unsplash.com/'},
+    {id:5, image:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=640', title:'Iconic Night', celebrity:'Billie Eilish', text:'Billie fans go wild at concert event.', credit:'Photo by Ben Oliver'},
+    // New Nagma post with Instagram embed
+    {id:6, image:'https://via.placeholder.com/640x640.png?text=Nagma+Instagram+Embed', title:'Cutie Nagma with the Dilip', celebrity:'@nagma', text:'Instagram Embed', credit:'Instagram / @nagma', creditUrl:'https://www.instagram.com/p/DRbrs-ojBPP/'}
 ];
+
+function escapeHtml(str){ if (!str && str!==0) return ''; return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
 
 function renderGrid(postsArr){
     const postsList = document.getElementById('postsList');
-    postsList.innerHTML = postsArr.map(post => {
-        if(post.embed){
-            return `<div class="post-tile">
+    postsList.innerHTML = postsArr.map(post => `
+        <div class="post-tile" onclick="showPost(${post.id})">
+            <img class="tile-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
             <div class="tile-overlay">
-                <div class="title-box">${post.title}<span class="view-more">View more</span></div>
-                <span style="font-size:0.85em;">${post.celebrity}</span>
+                <span class="title-box">${escapeHtml(post.title)}</span>
+                <span class="view-more">View more</span>
+                <span style="font-size:0.75rem;">${escapeHtml(post.celebrity)}</span>
             </div>
-            <iframe src="${post.embedUrl}" width="100%" height="500" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
-            <div class="credit">${post.credit}</div>
-            </div>`;
-        } else {
-            return `<div class="post-tile" onclick="showPost(${post.id})">
-                <img class="tile-img" src="${post.image}" alt="${post.title}">
-                <div class="tile-overlay">
-                    <div class="title-box">${post.title}<span class="view-more">View more</span></div>
-                    <span style="font-size:0.85em;">${post.celebrity}</span>
-                </div>
-            </div>`;
-        }
-    }).join('');
+        </div>
+    `).join('');
 }
 
-window.addEventListener('DOMContentLoaded', renderGrid(posts));
+let currentPost = null;
 
 function showPost(id){
     const post = posts.find(p=>p.id===id);
-    if(!post || post.embed) return; // embedded posts just open in homepage
+    if(!post) return;
+    currentPost = post;
     document.getElementById('mainFeed').style.display='none';
+    // Check if it's the Instagram embed post
+    let postContent = '';
+    if(post.id===6){
+        postContent = `
+            <button class="back-btn" onclick="goBack()">← Back</button>
+            <div class="post-card">
+                <div class="tile-overlay title-box">${escapeHtml(post.title)}</div>
+                <p style="font-size:0.8rem; margin:4px 0;">Credit: <a href="${escapeHtml(post.creditUrl)}" target="_blank" rel="noopener">${escapeHtml(post.credit)}</a></p>
+                <blockquote class="instagram-media" data-instgrm-permalink="${post.creditUrl}" data-instgrm-version="14" style="width:100%; max-width:540px;"></blockquote>
+            </div>
+            <div class="similar-posts-section">
+                <div class="similar-posts-title">Similar posts:</div>
+                <div class="similar-posts-list">
+                    ${renderSimilarPosts(post.id)}
+                </div>
+            </div>
+        `;
+        // Load Instagram embed script
+        if(!document.getElementById('instaScript')){
+            const script = document.createElement('script');
+            script.id='instaScript';
+            script.src="//www.instagram.com/embed.js";
+            script.async=true;
+            document.body.appendChild(script);
+        }
+    } else {
+        postContent = `
+            <button class="back-btn" onclick="goBack()">← Back</button>
+            <div class="post-card">
+                <img class="tile-img single" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
+                <div class="celebrity-credit">${escapeHtml(post.celebrity)}</div>
+                <div class="post-title">${escapeHtml(post.title)}</div>
+                <div class="credit">Credit: ${post.creditUrl ? `<a href="${escapeHtml(post.creditUrl)}" target="_blank" rel="noopener">${escapeHtml(post.credit)}</a>` : escapeHtml(post.credit||'Unknown')}</div>
+                <div class="post-text">${escapeHtml(post.text)}</div>
+            </div>
+            <div class="similar-posts-section">
+                <div class="similar-posts-title">Similar posts:</div>
+                <div class="similar-posts-list">
+                    ${renderSimilarPosts(post.id)}
+                </div>
+            </div>
+        `;
+    }
+    document.getElementById('singlePostView').innerHTML = postContent;
     document.getElementById('singlePostView').style.display='block';
 }
 
+function goBack(){
+    document.getElementById('mainFeed').style.display='flex';
+    document.getElementById('singlePostView').style.display='none';
+}
+
+function renderSimilarPosts(currentId){
+    return posts.filter(p=>p.id!==currentId).map(p=>`
+        <div class="similar-post-card" onclick="showPost(${p.id})" style="cursor:pointer; margin-bottom:10px;">
+            <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
+            <div style="text-align:center;">
+                <div class="post-title" style="display:block;font-size:0.95em;">${escapeHtml(p.title)}</div>
+                <div class="celebrity-credit" style="display:block;font-size:0.85em;">${escapeHtml(p.celebrity)}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Initial render
+renderGrid(posts);
 </script>
+
 </body>
 </html>
