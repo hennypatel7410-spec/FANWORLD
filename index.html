@@ -1,3 +1,4 @@
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -36,10 +37,11 @@ input, textarea, select, button { font-size: 16px; }
   display: inline-block;
   width: 100%;
 }
-/* Force all images (Post A & B if used) to same height */
+
+/* Force all images (Post A & similar thumbs) to same height */
 .tile-img, .similar-thumb {
   width: 100%;
-  height: 220px; /* fixed height for uniformity */
+  height: 220px; /* fixed height for Post A and similar posts */
   object-fit: cover;
   border-radius: 12px;
 }
@@ -58,21 +60,13 @@ input, textarea, select, button { font-size: 16px; }
 .tile-overlay span:first-child { font-weight: 700; font-size: 1rem; display: block; }
 .tile-overlay span:last-child { font-weight: 400; font-size: 0.85rem; display: block; }
 
-.post-card { border-radius: 12px; overflow: hidden; background: #fefefe; padding: 12px; box-shadow: 0 2px 10px #0001; }
-.back-btn { background: #b69967; color: #fff; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; margin-bottom: 12px; }
-
-/* Masonry layout */
-#postsList, .similar-posts-list { column-count: 3; column-gap: 16px; }
-@media(max-width: 1020px){ #postsList, .similar-posts-list { column-count: 2; } }
-@media(max-width: 600px){ #postsList, .similar-posts-list { column-count: 1; } }
-
-/* Post Type B beige box */
+/* Post Type B box */
 .post-tile-b {
   background: #e8dcc5; /* beige box */
-  color: #fff; /* white text */
+  color: #fff;
   border-radius: 12px;
   padding: 20px;
-  height: 220px; /* same size as image posts */
+  height: 110px; /* HALF the size of Post A */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -81,13 +75,30 @@ input, textarea, select, button { font-size: 16px; }
   text-align: center;
   font-weight: 700;
   font-size: 1.05rem;
+  position: relative;
 }
 .post-tile-b span {
   display: block;
-  margin-top: 6px;
+  margin-top: 4px;
   font-size: 0.9rem;
   font-weight: 400;
 }
+.post-tile-b .credit {
+  position: absolute;
+  bottom: 6px;
+  width: 100%;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: #fff;
+}
+
+.post-card { border-radius: 12px; overflow: hidden; background: #fefefe; padding: 12px; box-shadow: 0 2px 10px #0001; }
+.back-btn { background: #b69967; color: #fff; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; margin-bottom: 12px; }
+
+/* Masonry layout */
+#postsList, .similar-posts-list { column-count: 3; column-gap: 16px; }
+@media(max-width: 1020px){ #postsList, .similar-posts-list { column-count: 2; } }
+@media(max-width: 600px){ #postsList, .similar-posts-list { column-count: 1; } }
 </style>
 </head>
 <body>
@@ -133,16 +144,16 @@ window.addEventListener('DOMContentLoaded',()=>{openPolicy();});
 
 // Posts array (Post A + Post B)
 const posts=[
-  // NEW Post Type B — added at top
-  {id:21,type:'B',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek and Mridul Tiwari',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/'},
+  {id:1,type:'A',image:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640',title:'Cheer Squad',celebrity:'Taylor Swift',text:'Swifties unite at the world tour!'},
+  {id:3,type:'A',image:'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=640',title:'Rock On',celebrity:'Beyoncé',text:'A sea of lights from Queen Bey\'s fans!'},
+  {id:4,type:'A',image:'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=640',title:'Football Fever',celebrity:'Lionel Messi',text:'Messi fans everywhere show team spirit.'},
+  {id:5,type:'A',image:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=640',title:'Iconic Night',celebrity:'Billie Eilish',text:'Billie fans go wild at concert event.'},
 
-  // Existing Post A
-  {id:1,type:'A',image:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640',title:'Cheer Squad',celebrity:'Taylor Swift',text:'Swifties unite at the world tour!',credit:'Photo by Alex Brown',creditUrl:'https://unsplash.com/photos/1506744038136-46273834b3fb'},
-  {id:3,type:'A',image:'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=640',title:'Rock On',celebrity:'Beyoncé',text:'A sea of lights from Queen Bey\'s fans!',credit:'Photo by Jessica Wu'},
-  {id:4,type:'A',image:'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=640',title:'Football Fever',celebrity:'Lionel Messi',text:'Messi fans everywhere show team spirit.',credit:'Unsplash / UnsplashSports',creditUrl:'https://unsplash.com/'},
-  {id:5,type:'A',image:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=640',title:'Iconic Night',celebrity:'Billie Eilish',text:'Billie fans go wild at concert event.',credit:'Photo by Ben Oliver'},
-  {id:6,type:'B',image:'https://via.placeholder.com/640x480.png?text=Instagram+Screenshot',title:'Amazing Reel',celebrity:'Charli D’Amelio',text:'Check this out on Instagram!',externalLink:'https://www.instagram.com/p/CODE123/'},
-  {id:7,type:'B',image:'https://via.placeholder.com/640x480.png?text=TikTok+Screenshot',title:'Viral Dance',celebrity:'Addison Rae',text:'Watch the original on TikTok!',externalLink:'https://www.tiktok.com/@addison/video/1234567890'}
+  // NEW Post Type A
+  {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!'},
+
+  // Post Type B — rectangle, credit, link
+  {id:21,type:'B',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek and Mridul Tiwari',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'mj.vishal, Instagram'}
 ];
 
 let currentPost=null,lastViewedPostId=null;
@@ -150,7 +161,7 @@ let currentPost=null,lastViewedPostId=null;
 function renderGrid(postsArr){
   const postsList=document.getElementById('postsList');
   postsList.innerHTML=postsArr.map(post => {
-    if (post.type === 'A') {
+    if(post.type==='A'){
       return `
         <div class="post-tile" onclick="showPost(${post.id})">
           <img class="tile-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
@@ -165,10 +176,11 @@ function renderGrid(postsArr){
         <div class="post-tile-b" onclick="window.open('${escapeHtml(post.externalLink)}','_blank')">
           ${escapeHtml(post.title)}
           <span>${escapeHtml(post.celebrity)}</span>
+          <div class="credit">${escapeHtml(post.credit)}</div>
         </div>
       `;
     }
-  }).join('');
+  }).reverse().join(''); // latest posts appear first
 }
 
 function showPost(id){
@@ -178,8 +190,8 @@ function showPost(id){
   lastViewedPostId=id;
   document.getElementById('mainFeed').style.display='none';
   const creditSection=post.type==='A'
-    ? `<div class="credit">Credit: ${post.creditUrl?`<a href="${escapeHtml(post.creditUrl)}" target="_blank" rel="noopener">${escapeHtml(post.credit)}</a>`:escapeHtml(post.credit||'Unknown')}</div>`
-    : ''; // Post B opens link directly
+    ? ''
+    : `<div class="credit">Credit: ${escapeHtml(post.credit)}</div>`;
   document.getElementById('singlePostView').innerHTML=`
     <button class="back-btn" onclick="goBack()">← Back</button>
     <div class="post-card">
@@ -187,7 +199,7 @@ function showPost(id){
       <div class="celebrity-credit">${escapeHtml(post.celebrity)}</div>
       <div class="post-title">${escapeHtml(post.title)}</div>
       ${creditSection}
-      <div class="post-text">${escapeHtml(post.text||'')}</div>
+      ${post.text?`<div class="post-text">${escapeHtml(post.text)}</div>`:''}
     </div>
     ${post.type==='A'?`
     <div class="similar-posts-section">
@@ -203,7 +215,7 @@ function goBack(){ document.getElementById('mainFeed').style.display='flex'; doc
 function renderSimilarPosts(currentId){
   return posts.filter(p=>p.id!==currentId).map(p=>`
     <div class="similar-post-card" onclick="showPost(${p.id})">
-      <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
+      ${p.type==='A'?`<img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">`:''}
       <div class="tile-overlay">
         <span>${escapeHtml(p.title)}</span>
         <span>${escapeHtml(p.celebrity)}</span>
@@ -214,7 +226,7 @@ function renderSimilarPosts(currentId){
 
 function escapeHtml(str){ if(!str && str!==0) return ''; return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
 
-// Search for main feed & similar posts
+// Search functionality
 const searchInput=document.getElementById('searchBar');
 let searchTimer=null;
 if(searchInput){ searchInput.addEventListener('keyup',()=>{
@@ -223,18 +235,6 @@ if(searchInput){ searchInput.addEventListener('keyup',()=>{
     const query=searchInput.value.toLowerCase();
     const filtered=posts.filter(p=>p.title.toLowerCase().includes(query)||p.celebrity.toLowerCase().includes(query));
     if(document.getElementById('mainFeed').style.display!=='none'){ renderGrid(filtered); }
-    if(document.getElementById('singlePostView').style.display!=='none'){
-      const similarList=document.querySelector('.similar-posts-list');
-      if(similarList){ similarList.innerHTML=filtered.filter(p=>p.id!==lastViewedPostId).map(p=>`
-        <div class="similar-post-card" onclick="showPost(${p.id})">
-          <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
-          <div class="tile-overlay">
-            <span>${escapeHtml(p.title)}</span>
-            <span>${escapeHtml(post.celebrity)}</span>
-          </div>
-        </div>
-      `).join(''); }
-    }
   },300);
 }); }
 
@@ -242,3 +242,5 @@ document.addEventListener('DOMContentLoaded',()=>{ renderGrid(posts); });
 </script>
 </body>
 </html>
+
+
