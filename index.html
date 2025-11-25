@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *, *:before, *:after { box-sizing: border-box; }
-html, body { max-width: 100%; overflow-x: hidden; -webkit-text-size-adjust: 100%; }
+html, body { max-width: 100%; overflow-x: hidden; -webkit-text-size-adjust: 100%; height:100%; }
 body, header, input, .container, .main-feed-flex, .posts-column, .welcome-box, .welcome-box h2, .welcome-box p, .post-title, .post-text, .post-actions, .back-btn, .credit, .similar-posts-section, .similar-posts-title, .similar-post-card { font-family: 'Barlow', Arial, sans-serif !important; }
 body { background: #fff; margin: 0; color: #222; }
 header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background: #e0d7c3; color: #222; box-shadow: 0 2px 10px #0001; }
@@ -15,8 +15,10 @@ header { display: flex; justify-content: space-between; align-items: center; pad
 input, textarea, select, button { font-size: 16px; }
 #searchBar { padding: 8px 14px; font-size: 1rem; border-radius: 7px; border: 1px solid #bbb; width: 220px; transition: border-color 0.2s; outline: none; background: #fff;}
 #searchBar:focus { border-color: #b69967; }
-.container { padding: 28px 14px; max-width: 940px; margin: 28px auto 0 auto; background: #fff; border-radius: 14px; min-height: 330px; }
-.main-feed-flex { display: flex; flex-direction: row; align-items: flex-start; gap: 20px; position: relative; min-height: 330px; background: #fff; }
+
+/* Dashboard container stretched */
+.container { padding: 28px 14px; max-width: 1200px; margin: 28px auto 0 auto; background: #fff; border-radius: 14px; min-height: calc(100vh - 120px); display:flex; flex-direction:row; gap:20px; }
+.main-feed-flex { display: flex; flex-direction: row; align-items: flex-start; gap: 20px; width:100%; }
 
 /* Policy modal */
 #policyModal { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9999; display: flex; align-items: center; justify-content: center; }
@@ -26,7 +28,7 @@ input, textarea, select, button { font-size: 16px; }
 #policyModal label { display: flex; align-items: center; gap: 8px; font-size: 0.98rem; }
 #policyModal button { padding: 9px 16px; border-radius: 8px; background: #b69967; color: #fff; border: none; font-weight: 700; cursor: pointer; }
 
-/* Post tile and card CSS for Pinterest-style layout */
+/* Post tile and card CSS */
 .post-tile, .similar-post-card {
   position: relative;
   cursor: pointer;
@@ -36,20 +38,10 @@ input, textarea, select, button { font-size: 16px; }
   display: inline-block;
   width: 100%;
 }
-/* Force all grid images (Post A & B) to same height */
-.tile-img, .similar-thumb {
-  width: 100%;
-  height: 220px; /* fixed height for uniformity */
-  object-fit: cover;
-  border-radius: 12px;
-}
-
+/* Grid images */
+.tile-img, .similar-thumb { width: 100%; height: 220px; object-fit: cover; border-radius: 12px; }
 /* Single post full image */
-.tile-img.single {
-  height: auto;      /* full height display */
-  max-width: 100%;   /* fit container */
-  border-radius: 12px;
-}
+.tile-img.single { height:auto; max-width:100%; display:block; border-radius:12px; margin-bottom:12px; }
 
 /* Overlay at bottom of image */
 .tile-overlay {
@@ -72,6 +64,9 @@ input, textarea, select, button { font-size: 16px; }
 #postsList, .similar-posts-list { column-count: 3; column-gap: 16px; }
 @media(max-width: 1020px){ #postsList, .similar-posts-list { column-count: 2; } }
 @media(max-width: 600px){ #postsList, .similar-posts-list { column-count: 1; } }
+
+.posts-column { flex: 1; }
+.welcome-box { flex: 0 0 280px; }
 </style>
 </head>
 <body>
@@ -115,7 +110,7 @@ agreeBox.addEventListener('change',()=>{agreeBtn.disabled=!agreeBox.checked;});
 agreeBtn.addEventListener('click',()=>{closePolicy();});
 window.addEventListener('DOMContentLoaded',()=>{openPolicy();});
 
-// Posts array (newest first)
+// Posts array (newest on top)
 const posts=[
   {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!'},
   {id:1,type:'A',image:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640',title:'Cheer Squad',celebrity:'Taylor Swift',text:'Swifties unite at the world tour!'},
@@ -147,9 +142,7 @@ function showPost(id){
   currentPost=post;
   lastViewedPostId=id;
   document.getElementById('mainFeed').style.display='none';
-  const creditSection=post.type==='A'
-    ? ''  // no credits for Post Type A
-    : `<div class="credit">Check this out: <a href="${escapeHtml(post.externalLink)}" target="_blank" rel="noopener">Link</a></div>`;
+  const creditSection=post.type==='A' ? '' : `<div class="credit">Check this out: <a href="${escapeHtml(post.externalLink)}" target="_blank" rel="noopener">Link</a></div>`;
   document.getElementById('singlePostView').innerHTML=`
     <button class="back-btn" onclick="goBack()">← Back</button>
     <div class="post-card">
@@ -183,7 +176,7 @@ function renderSimilarPosts(currentId){
 
 function escapeHtml(str){ if(!str && str!==0) return ''; return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
 
-// Search functionality
+// Search
 const searchInput=document.getElementById('searchBar');
 let searchTimer=null;
 if(searchInput){ searchInput.addEventListener('keyup',()=>{
@@ -211,5 +204,3 @@ document.addEventListener('DOMContentLoaded',()=>{ renderGrid(posts); });
 </script>
 </body>
 </html>
-
-
