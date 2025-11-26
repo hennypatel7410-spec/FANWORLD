@@ -94,7 +94,19 @@ input, textarea, select, button { font-size: 16px; }
 <div id="policyModal" aria-hidden="false">
   <div class="modal-inner">
     <h2>FanWorld Policy</h2>
-    <p>I agree to the FanWorld Policy: All content is properly credited, shared only for sweet entertainment and enjoyment, not intended to harm anyone or any platform. I understand I can only access FanWorld after agreeing. <strong>Sweet enjoyment is the goal!</strong></p>
+
+    <p>
+      I agree to the FanWorld Policy: All content is properly credited, shared only for sweet
+      entertainment and enjoyment, not intended to harm anyone or any platform.
+      I understand I can only access FanWorld after agreeing.
+      <strong>Sweet enjoyment is the goal!</strong>
+    </p>
+
+    <!-- ⭐ ADDED EXACTLY WHAT YOU REQUESTED — OPTION 1 ABOUT CREDITING CREATORS ⭐ -->
+    <p><strong>Extra Note:</strong> If any content is edited into a collage or compilation,  
+    I understand I must credit the <strong>original creator</strong> as the source of the images/clips,  
+    even if the edit is my own.</p>
+
     <div style="margin-bottom:12px;">
       <label><input type="checkbox" id="agreeBox"> I agree to the FanWorld Policy.</label>
     </div>
@@ -114,7 +126,9 @@ input, textarea, select, button { font-size: 16px; }
   <div class="welcome-box">
     <h2>Welcome to FanWorld!</h2>
     <p>Browse the latest posts. Click a post to see details!</p>
-    <p>Our purpose is to provide with cute content and support social media users/creators. Posts may be added/removed from the dashboard.</p>
+
+    <p>Our purpose is to provide with cute content and support social media users/creators.  
+    Posts may be added/removed from the dashboard.</p>
   </div>
 </div>
 
@@ -155,7 +169,7 @@ function renderGrid(postsArr){
           <span>${escapeHtml(post.celebrity)}</span>
         </div>
       </div>`;
-    } else { // Post B
+    } else {
       return `<div class="post-tile postB" onclick="showPost(${post.id})">
         <div class="tile-overlay">
           <span>${escapeHtml(post.title)}</span>
@@ -270,3 +284,4 @@ document.addEventListener('DOMContentLoaded',()=>{ renderGrid(posts); });
 </script>
 </body>
 </html>
+      
