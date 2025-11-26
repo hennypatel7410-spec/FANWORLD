@@ -86,34 +86,10 @@ input, textarea, select, button { font-size: 16px; }
 @media(max-width: 1020px){ #postsList, .similar-posts-list { column-count: 2; } }
 @media(max-width: 600px){ #postsList, .similar-posts-list { column-count: 1; } }
 
-/* Sidebar special post */
-#sidebarPost { 
-  margin-top: 20px; 
-  cursor: pointer; 
-  border-radius: 12px; 
-  overflow: hidden; 
-  width: 100%; 
-  height: 220px; /* same as Post A */
-  position: relative;
-}
-#sidebarPost img { 
-  width: 100%; 
-  height: 100%; /* fill the same height */
-  object-fit: cover;
-  border-radius: 12px; 
-  display: block; 
-}
-#sidebarPost .tile-overlay { 
-  position: absolute; 
-  bottom: 0; 
-  left: 0; 
-  width: 100%; 
-  background: rgba(0,0,0,0.55); 
-  color: #fff; 
-  padding: 8px 10px; 
-  line-height: 1.2; 
-  border-radius:0 0 12px 12px; 
-}
+/* Sidebar special post: use Post A size */
+#sidebarPost { margin-top: 20px; cursor: pointer; border-radius: 12px; overflow: hidden; width: 100%; height: 220px; position: relative;}
+#sidebarPost img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; display: block; }
+#sidebarPost .tile-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.55); color: #fff; padding: 8px 10px; line-height: 1.2; border-radius:0 0 12px 12px; }
 </style>
 </head>
 <body>
@@ -145,7 +121,7 @@ input, textarea, select, button { font-size: 16px; }
     <p>Browse the latest posts. Click a post to see details!</p>
     <p>Our purpose is to provide with cute content and support social media users/creators. Posts may be added/removed from the dashboard.</p>
     
-    <!-- Sidebar special post -->
+    <!-- Sidebar special post (Post A size) -->
     <div id="sidebarPost" onclick="showPost(12)">
       <img src="https://i.imgur.com/EbUW3gU.jpeg" alt="We want to see this again">
       <div class="tile-overlay">
@@ -168,24 +144,13 @@ agreeBox.addEventListener('change',()=>{agreeBtn.disabled=!agreeBox.checked;});
 agreeBtn.addEventListener('click',()=>{closePolicy();});
 window.addEventListener('DOMContentLoaded',()=>{openPolicy();});
 
-// Posts array (newest first)
+// Posts array
 const posts=[
-  // New Post Type A
   {id:11,type:'A',image:'https://i.imgur.com/8HPjZxI.jpeg',title:"A peak of Tanya's 800 saris",celebrity:'Tanya Mittal',text:'',credit:'Instagram / tanyamittalofficial'},
-
-  // Existing Post Type B
   {id:10,type:'B',image:'',title:'Every girl wants a blush moment like this',celebrity:'Tanya Mittal & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DO2_qRoiPLg/',credit:'Instagram / realityshow_editz3000'},
-
-  // Existing Post B
   {id:8,type:'B',image:'',title:'BB19 Die for moment',celebrity:'Armaan & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DRXlVhKE2Ww/',credit:'Instagram / proudly_armaalian'},
-  
-  // Existing Tanya Mittal Post A (with credit)
   {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!',credit:'Credit for parts joined to create design: Instagram / Shagun Vashishth & Tanya Mittal'},
-
-  // Existing Post B
   {id:7,type:'B',image:'',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',text:'',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'Instagram / mj.vishal'},
-
-  // Sidebar special embedded post (Type B)
   {id:12,type:'B',image:'https://i.imgur.com/EbUW3gU.jpeg',title:'We want to see this again',celebrity:'Tanya Mittal & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DRWrB3rDHsZ/',credit:'Instagram / biggbosssss_19'}
 ];
 
@@ -202,7 +167,7 @@ function renderGrid(postsArr){
           <span>${escapeHtml(post.celebrity)}</span>
         </div>
       </div>`;
-    } else { // Post B
+    } else {
       return `<div class="post-tile postB" onclick="showPost(${post.id})">
         <div class="tile-overlay">
           <span>${escapeHtml(post.title)}</span>
@@ -271,7 +236,7 @@ function renderSimilarPosts(currentId){
         <div class="tile-overlay">
           <span>${escapeHtml(p.title)}</span>
           <span>${escapeHtml(p.celebrity)}</span>
-          <div class="credit">${escapeHtml(post.credit)}</div>
+          <div class="credit">${escapeHtml(p.credit)}</div>
         </div>
       </div>`;
     }
@@ -280,7 +245,6 @@ function renderSimilarPosts(currentId){
 
 function escapeHtml(str){ if(!str && str!==0) return ''; return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
 
-// Search functionality
 const searchInput=document.getElementById('searchBar');
 let searchTimer=null;
 if(searchInput){ searchInput.addEventListener('keyup',()=>{
