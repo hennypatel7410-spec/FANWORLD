@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -132,18 +131,21 @@ agreeBox.addEventListener('change',()=>{agreeBtn.disabled=!agreeBox.checked;});
 agreeBtn.addEventListener('click',()=>{closePolicy();});
 window.addEventListener('DOMContentLoaded',()=>{openPolicy();});
 
-// Posts array (keep all existing, newest first)
+// Posts array (newest first)
 const posts=[
-  // New Post B added at top
-  {id:9,type:'B',image:'',title:'Every girl wants a blush moment like this',celebrity:'Tanya Mittal & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DO2_qRoiPLg/',credit:'Instagram / realityshow_editz3000'},
+  // New Post Type A
+  {id:11,type:'A',image:'https://i.imgur.com/8HPjZxI.jpeg',title:"A peak of Tanya's 800 saris",celebrity:'Tanya Mittal',text:'',credit:'Instagram / tanyamittalofficial'},
 
-  // New Post B
+  // Existing Post Type B
+  {id:10,type:'B',image:'',title:'Every girl wants a blush moment like this',celebrity:'Tanya Mittal & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DO2_qRoiPLg/',credit:'Instagram / realityshow_editz3000'},
+
+  // Existing Post B
   {id:8,type:'B',image:'',title:'BB19 Die for moment',celebrity:'Armaan & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DRXlVhKE2Ww/',credit:'Instagram / proudly_armaalian'},
   
-  // Tanya Mittal Post A (with added credit)
+  // Existing Tanya Mittal Post A (with credit)
   {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!',credit:'Credit for parts joined to create design: Instagram / Shagun Vashishth & Tanya Mittal'},
-  
-  // Existing first Post B
+
+  // Existing Post B
   {id:7,type:'B',image:'',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',text:'',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'Instagram / mj.vishal'}
 ];
 
@@ -202,6 +204,7 @@ function showPost(id){
     <div class="post-card">
       ${postContent}
       <div class="post-text">${escapeHtml(post.text||'')}</div>
+      ${creditSection}
     </div>
     <div class="similar-posts-section">
       <div class="similar-posts-title">Similar posts:</div>
@@ -275,4 +278,4 @@ document.addEventListener('DOMContentLoaded',()=>{ renderGrid(posts); });
 </script>
 </body>
 </html>
-  
+ 
