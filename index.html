@@ -94,19 +94,8 @@ input, textarea, select, button { font-size: 16px; }
 <div id="policyModal" aria-hidden="false">
   <div class="modal-inner">
     <h2>FanWorld Policy</h2>
-
-    <p>
-      I agree to the FanWorld Policy: All content is properly credited, shared only for sweet
-      entertainment and enjoyment, not intended to harm anyone or any platform.
-      I understand I can only access FanWorld after agreeing.
-      <strong>Sweet enjoyment is the goal!</strong>
-    </p>
-
-    <!-- ⭐ ADDED EXACTLY WHAT YOU REQUESTED — OPTION 1 ABOUT CREDITING CREATORS ⭐ -->
-    <p><strong>Extra Note:</strong> If any content is edited into a collage or compilation,  
-    I understand I must credit the <strong>original creator</strong> as the source of the images/clips,  
-    even if the edit is my own.</p>
-
+    <p>I agree to the FanWorld Policy: All content is properly credited, shared only for sweet entertainment and enjoyment, not intended to harm anyone or any platform. I understand I can only access FanWorld after agreeing. <strong>Sweet enjoyment is the goal!</strong></p>
+    <p>All images used in collages or posts belong to their respective creators. They are used here for inspiration purposes only, with no intent to infringe copyright. If you are a creator and would like your content removed, please contact us.</p>
     <div style="margin-bottom:12px;">
       <label><input type="checkbox" id="agreeBox"> I agree to the FanWorld Policy.</label>
     </div>
@@ -126,9 +115,7 @@ input, textarea, select, button { font-size: 16px; }
   <div class="welcome-box">
     <h2>Welcome to FanWorld!</h2>
     <p>Browse the latest posts. Click a post to see details!</p>
-
-    <p>Our purpose is to provide with cute content and support social media users/creators.  
-    Posts may be added/removed from the dashboard.</p>
+    <p>Our purpose is to provide with cute content and support social media users/creators. Posts may be added/removed from the dashboard.</p>
   </div>
 </div>
 
@@ -150,7 +137,7 @@ const posts=[
   {id:8,type:'B',image:'',title:'BB19 Die for moment',celebrity:'Armaan & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DRXlVhKE2Ww/',credit:'Instagram / proudly_armaalian'},
   
   // Existing Tanya Mittal Post A
-  {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!'},
+  {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!', credit:'FanWorld'},
   
   // Existing first Post B
   {id:7,type:'B',image:'',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',text:'',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'Instagram / mj.vishal'}
@@ -169,7 +156,7 @@ function renderGrid(postsArr){
           <span>${escapeHtml(post.celebrity)}</span>
         </div>
       </div>`;
-    } else {
+    } else { // Post B
       return `<div class="post-tile postB" onclick="showPost(${post.id})">
         <div class="tile-overlay">
           <span>${escapeHtml(post.title)}</span>
@@ -189,7 +176,7 @@ function showPost(id){
   document.getElementById('mainFeed').style.display='none';
   let creditSection='';
   if(post.type==='A'){
-    creditSection='';
+    creditSection = post.credit ? `<div class="credit">${escapeHtml(post.credit)}</div>` : '';
   } else if(post.type==='B'){
     creditSection=`<div class="credit">${escapeHtml(post.credit)}</div>
     <div><a href="${escapeHtml(post.externalLink)}" target="_blank" rel="noopener">Check this out</a></div>`;
@@ -197,7 +184,8 @@ function showPost(id){
 
   let postContent='';
   if(post.type==='A'){
-    postContent=`<img class="tile-img single" src="${escapeHtml(post.image)}" style="width:100%; height:auto; border-radius:12px;" alt="${escapeHtml(post.title)}">`;
+    postContent=`<img class="tile-img single" src="${escapeHtml(post.image)}" style="width:100%; height:auto; border-radius:12px;" alt="${escapeHtml(post.title)}">
+    ${creditSection}`;
   } else {
     postContent=`<div class="postB" style="height:220px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
       <span>${escapeHtml(post.title)}</span>
@@ -228,16 +216,16 @@ function renderSimilarPosts(currentId){
       return `<div class="similar-post-card postA" onclick="showPost(${p.id})">
         <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
         <div class="tile-overlay">
-          <span>${escapeHtml(p.title)}</span>
-          <span>${escapeHtml(p.celebrity)}</span>
+          <span>${escapeHtml(post.title)}</span>
+          <span>${escapeHtml(post.celebrity)}</span>
         </div>
       </div>`;
     } else {
       return `<div class="similar-post-card postB" onclick="showPost(${p.id})">
         <div class="tile-overlay">
-          <span>${escapeHtml(p.title)}</span>
-          <span>${escapeHtml(p.celebrity)}</span>
-          <div class="credit">${escapeHtml(p.credit)}</div>
+          <span>${escapeHtml(post.title)}</span>
+          <span>${escapeHtml(post.celebrity)}</span>
+          <div class="credit">${escapeHtml(post.credit)}</div>
         </div>
       </div>`;
     }
@@ -262,16 +250,16 @@ if(searchInput){ searchInput.addEventListener('keyup',()=>{
           return `<div class="similar-post-card postA" onclick="showPost(${p.id})">
             <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
             <div class="tile-overlay">
-              <span>${escapeHtml(p.title)}</span>
-              <span>${escapeHtml(p.celebrity)}</span>
+              <span>${escapeHtml(post.title)}</span>
+              <span>${escapeHtml(post.celebrity)}</span>
             </div>
           </div>`;
         } else {
           return `<div class="similar-post-card postB" onclick="showPost(${p.id})">
             <div class="tile-overlay">
-              <span>${escapeHtml(p.title)}</span>
-              <span>${escapeHtml(p.celebrity)}</span>
-              <div class="credit">${escapeHtml(p.credit)}</div>
+              <span>${escapeHtml(post.title)}</span>
+              <span>${escapeHtml(post.celebrity)}</span>
+              <div class="credit">${escapeHtml(post.credit)}</div>
             </div>
           </div>`;
         }
