@@ -94,7 +94,8 @@ input, textarea, select, button { font-size: 16px; }
 <div id="policyModal" aria-hidden="false">
   <div class="modal-inner">
     <h2>FanWorld Policy</h2>
-    <p>All images used in collages or posts belong to their respective creators. They are used here for inspiration purposes only, with no intent to infringe copyright. If you wish to reach out, contact: fanclubforyouishere@gmail.com.</p>
+    <p>I agree to the FanWorld Policy: All content is properly credited, shared only for sweet entertainment and enjoyment, not intended to harm anyone or any platform. I understand I can only access FanWorld after agreeing. Sweet enjoyment is the goal!</p>
+    <p>All images used in collages or posts belong to their respective creators. They are used here for inspiration purposes only, with no intent to infringe copyright. If you wish to reach out, contact: fanclubforyouishere@gmail.com</p>
     <div style="margin-bottom:12px;">
       <label><input type="checkbox" id="agreeBox"> I agree to the FanWorld Policy.</label>
     </div>
@@ -130,10 +131,15 @@ agreeBox.addEventListener('change',()=>{agreeBtn.disabled=!agreeBox.checked;});
 agreeBtn.addEventListener('click',()=>{closePolicy();});
 window.addEventListener('DOMContentLoaded',()=>{openPolicy();});
 
-// Posts array (newest first)
+// Posts array (keep all existing, newest first)
 const posts=[
+  // New Post B added at top
   {id:8,type:'B',image:'',title:'BB19 Die for moment',celebrity:'Armaan & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DRXlVhKE2Ww/',credit:'Instagram / proudly_armaalian'},
-  {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!', credit:'Instagram / Shagun Vashishth & Tanya Mittal'},
+  
+  // Existing Tanya Mittal Post A with added credit
+  {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!', credit:'Credit for parts joined to create design: Instagram / Shagun Vashishth & Tanya Mittal'},
+  
+  // Existing first Post B
   {id:7,type:'B',image:'',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',text:'',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'Instagram / mj.vishal'}
 ];
 
@@ -150,7 +156,7 @@ function renderGrid(postsArr){
           <span>${escapeHtml(post.celebrity)}</span>
         </div>
       </div>`;
-    } else {
+    } else { // Post B
       return `<div class="post-tile postB" onclick="showPost(${post.id})">
         <div class="tile-overlay">
           <span>${escapeHtml(post.title)}</span>
@@ -170,7 +176,7 @@ function showPost(id){
   document.getElementById('mainFeed').style.display='none';
   let creditSection='';
   if(post.type==='A'){
-    creditSection = post.credit ? `<div class="credit">${escapeHtml(post.credit)}</div>` : '';
+    creditSection=`<div class="credit">${escapeHtml(post.credit)}</div>`;
   } else if(post.type==='B'){
     creditSection=`<div class="credit">${escapeHtml(post.credit)}</div>
     <div><a href="${escapeHtml(post.externalLink)}" target="_blank" rel="noopener">Check this out</a></div>`;
@@ -178,8 +184,7 @@ function showPost(id){
 
   let postContent='';
   if(post.type==='A'){
-    postContent=`<img class="tile-img single" src="${escapeHtml(post.image)}" style="width:100%; height:auto; border-radius:12px;" alt="${escapeHtml(post.title)}">
-    ${creditSection}`;
+    postContent=`<img class="tile-img single" src="${escapeHtml(post.image)}" style="width:100%; height:auto; border-radius:12px;" alt="${escapeHtml(post.title)}">`;
   } else {
     postContent=`<div class="postB" style="height:220px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
       <span>${escapeHtml(post.title)}</span>
@@ -193,6 +198,7 @@ function showPost(id){
     <div class="post-card">
       ${postContent}
       <div class="post-text">${escapeHtml(post.text||'')}</div>
+      ${post.type==='A'?creditSection:''}
     </div>
     <div class="similar-posts-section">
       <div class="similar-posts-title">Similar posts:</div>
