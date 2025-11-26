@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>FanWorld Feed & Post</title>
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap" relstylesheet>
 <style>
 *, *:before, *:after { box-sizing: border-box; }
 html, body { max-width: 100%; overflow-x: hidden; -webkit-text-size-adjust: 100%; }
@@ -133,8 +133,11 @@ window.addEventListener('DOMContentLoaded',()=>{openPolicy();});
 
 // Posts array (newest first)
 const posts=[
-  // New Post Type A
+  // Post Type A
   {id:11,type:'A',image:'https://i.imgur.com/8HPjZxI.jpeg',title:"A peak of Tanya's 800 saris",celebrity:'Tanya Mittal',text:'',credit:'Instagram / tanyamittalofficial'},
+
+  // Screenshot Post (Type B content but displayed as image)
+  {id:12,type:'B',image:'https://i.imgur.com/EbUW3gU.jpeg',title:'We want to see this again',celebrity:'Tanya Mittal & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DRWrB3rDHsZ/',credit:'Instagram / biggbosssss_19'},
 
   // Existing Post Type B
   {id:10,type:'B',image:'',title:'Every girl wants a blush moment like this',celebrity:'Tanya Mittal & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DO2_qRoiPLg/',credit:'Instagram / realityshow_editz3000'},
@@ -154,7 +157,7 @@ let currentPost=null,lastViewedPostId=null;
 function renderGrid(postsArr){
   const postsList=document.getElementById('postsList');
   postsList.innerHTML=postsArr.map(post=>{
-    if(post.type==='A'){
+    if(post.type==='A' || (post.type==='B' && post.image)){ // Show image for Post B with screenshot
       return `<div class="post-tile postA" onclick="showPost(${post.id})">
         <img class="tile-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
         <div class="tile-overlay">
@@ -162,7 +165,7 @@ function renderGrid(postsArr){
           <span>${escapeHtml(post.celebrity)}</span>
         </div>
       </div>`;
-    } else { // Post B
+    } else { // Regular Post B
       return `<div class="post-tile postB" onclick="showPost(${post.id})">
         <div class="tile-overlay">
           <span>${escapeHtml(post.title)}</span>
@@ -181,7 +184,7 @@ function showPost(id){
   lastViewedPostId=id;
   document.getElementById('mainFeed').style.display='none';
   let creditSection='';
-  if(post.type==='A'){
+  if(post.type==='A' || (post.type==='B' && post.image)){
     creditSection=`<div class="credit">${escapeHtml(post.credit)}</div>`;
   } else if(post.type==='B'){
     creditSection=`<div class="credit">${escapeHtml(post.credit)}</div>
@@ -189,7 +192,7 @@ function showPost(id){
   }
 
   let postContent='';
-  if(post.type==='A'){
+  if(post.type==='A' || (post.type==='B' && post.image)){
     postContent=`<img class="tile-img single" src="${escapeHtml(post.image)}" style="width:100%; height:auto; border-radius:12px;" alt="${escapeHtml(post.title)}">`;
   } else {
     postContent=`<div class="postB" style="height:220px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
@@ -218,7 +221,7 @@ function goBack(){ document.getElementById('mainFeed').style.display='flex'; doc
 
 function renderSimilarPosts(currentId){
   return posts.filter(p=>p.id!==currentId).map(p=>{
-    if(p.type==='A'){
+    if(p.type==='A' || (p.type==='B' && p.image)){
       return `<div class="similar-post-card postA" onclick="showPost(${p.id})">
         <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
         <div class="tile-overlay">
@@ -252,7 +255,7 @@ if(searchInput){ searchInput.addEventListener('keyup',()=>{
     if(document.getElementById('singlePostView').style.display!=='none'){
       const similarList=document.querySelector('.similar-posts-list');
       if(similarList){ similarList.innerHTML=filtered.filter(p=>p.id!==lastViewedPostId).map(p=>{
-        if(p.type==='A'){
+        if(p.type==='A' || (p.type==='B' && p.image)){
           return `<div class="similar-post-card postA" onclick="showPost(${p.id})">
             <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
             <div class="tile-overlay">
@@ -278,4 +281,5 @@ document.addEventListener('DOMContentLoaded',()=>{ renderGrid(posts); });
 </script>
 </body>
 </html>
- 
+
+     
