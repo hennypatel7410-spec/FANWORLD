@@ -87,12 +87,33 @@ input, textarea, select, button { font-size: 16px; }
 @media(max-width: 600px){ #postsList, .similar-posts-list { column-count: 1; } }
 
 /* Sidebar special post */
-#sidebarPost { margin-top: 20px; cursor: pointer; border-radius: 12px; overflow: hidden; width: 100%; }
-#sidebarPost img { width: 100%; border-radius: 12px; display: block; }
-#sidebarPost .tile-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.55); color: #fff; padding: 8px 10px; line-height: 1.2; border-radius:0 0 12px 12px; }
-#sidebarPost .tile-overlay span:first-child { font-weight: 700; font-size: 0.95rem; display: block; }
-#sidebarPost .tile-overlay span:last-child { font-weight: 400; font-size: 0.85rem; display: block; }
-
+#sidebarPost { 
+  margin-top: 20px; 
+  cursor: pointer; 
+  border-radius: 12px; 
+  overflow: hidden; 
+  width: 100%; 
+  height: 220px; /* same as Post A */
+  position: relative;
+}
+#sidebarPost img { 
+  width: 100%; 
+  height: 100%; /* fill the same height */
+  object-fit: cover;
+  border-radius: 12px; 
+  display: block; 
+}
+#sidebarPost .tile-overlay { 
+  position: absolute; 
+  bottom: 0; 
+  left: 0; 
+  width: 100%; 
+  background: rgba(0,0,0,0.55); 
+  color: #fff; 
+  padding: 8px 10px; 
+  line-height: 1.2; 
+  border-radius:0 0 12px 12px; 
+}
 </style>
 </head>
 <body>
@@ -123,9 +144,9 @@ input, textarea, select, button { font-size: 16px; }
     <h2>Welcome to FanWorld!</h2>
     <p>Browse the latest posts. Click a post to see details!</p>
     <p>Our purpose is to provide with cute content and support social media users/creators. Posts may be added/removed from the dashboard.</p>
-
-    <!-- Special Sidebar Post -->
-    <div id="sidebarPost" onclick="showPost(100)">
+    
+    <!-- Sidebar special post -->
+    <div id="sidebarPost" onclick="showPost(12)">
       <img src="https://i.imgur.com/EbUW3gU.jpeg" alt="We want to see this again">
       <div class="tile-overlay">
         <span>We want to see this again</span>
@@ -149,9 +170,6 @@ window.addEventListener('DOMContentLoaded',()=>{openPolicy();});
 
 // Posts array (newest first)
 const posts=[
-  // Sidebar special post
-  {id:100,type:'B',image:'https://i.imgur.com/EbUW3gU.jpeg',title:'We want to see this again',celebrity:'Tanya Mittal & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DRWrB3rDHsZ/',credit:'Instagram / biggbosssss_19'},
-
   // New Post Type A
   {id:11,type:'A',image:'https://i.imgur.com/8HPjZxI.jpeg',title:"A peak of Tanya's 800 saris",celebrity:'Tanya Mittal',text:'',credit:'Instagram / tanyamittalofficial'},
 
@@ -165,7 +183,10 @@ const posts=[
   {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!',credit:'Credit for parts joined to create design: Instagram / Shagun Vashishth & Tanya Mittal'},
 
   // Existing Post B
-  {id:7,type:'B',image:'',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',text:'',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'Instagram / mj.vishal'}
+  {id:7,type:'B',image:'',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',text:'',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'Instagram / mj.vishal'},
+
+  // Sidebar special embedded post (Type B)
+  {id:12,type:'B',image:'https://i.imgur.com/EbUW3gU.jpeg',title:'We want to see this again',celebrity:'Tanya Mittal & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DRWrB3rDHsZ/',credit:'Instagram / biggbosssss_19'}
 ];
 
 let currentPost=null,lastViewedPostId=null;
@@ -250,7 +271,7 @@ function renderSimilarPosts(currentId){
         <div class="tile-overlay">
           <span>${escapeHtml(p.title)}</span>
           <span>${escapeHtml(p.celebrity)}</span>
-          <div class="credit">${escapeHtml(p.credit)}</div>
+          <div class="credit">${escapeHtml(post.credit)}</div>
         </div>
       </div>`;
     }
@@ -297,4 +318,3 @@ document.addEventListener('DOMContentLoaded',()=>{ renderGrid(posts); });
 </script>
 </body>
 </html>
-  
