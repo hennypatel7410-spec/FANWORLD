@@ -3,6 +3,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>FanWorld Feed & Post</title>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-13053796798"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-13053796798');
+</script>
+
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -17,8 +27,7 @@ input, textarea, select, button { font-size: 16px; }
 #searchBar:focus { border-color: #b69967; }
 .container { padding: 28px 14px; max-width: 940px; margin: 28px auto 0 auto; background: #fff; border-radius: 14px; min-height: 330px; }
 .main-feed-flex { display: flex; flex-direction: row; align-items: flex-start; gap: 20px; position: relative; min-height: 330px; background: #fff; }
-.posts-column { flex:1; }
-.welcome-box { flex-basis: 300px; flex-shrink:0; }
+
 /* Policy modal */
 #policyModal { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9999; display: flex; align-items: center; justify-content: center; }
 #policyModal .modal-inner { background: #fff; padding: 20px; border-radius: 12px; max-width: 92vw; width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); font-family: 'Barlow', sans-serif; }
@@ -44,7 +53,7 @@ input, textarea, select, button { font-size: 16px; }
   border-radius: 12px;
 }
 .post-tile.postA .tile-img, .similar-post-card.postA .similar-thumb {
-  height: 110px; /* same size as small posts */
+  height: 220px; 
 }
 .post-tile.postB, .similar-post-card.postB { /* Post B rectangle style */
   background: #d2b48c; /* dark beige */
@@ -87,7 +96,6 @@ input, textarea, select, button { font-size: 16px; }
 @media(max-width: 1020px){ #postsList, .similar-posts-list { column-count: 2; } }
 @media(max-width: 600px){ #postsList, .similar-posts-list { column-count: 1; } }
 
-#sidebarSpecialPosts { margin-top:16px; }
 </style>
 </head>
 <body>
@@ -118,8 +126,8 @@ input, textarea, select, button { font-size: 16px; }
     <h2>Welcome to FanWorld!</h2>
     <p>Browse the latest posts. Click a post to see details!</p>
     <p>Our purpose is to provide with cute content and support social media users/creators. Posts may be added/removed from the dashboard.</p>
-    <!-- Special posts sidebar container -->
-    <div id="sidebarSpecialPosts"></div>
+    <!-- Sidebar special post container -->
+    <div id="sidebarPosts"></div>
   </div>
 </div>
 
@@ -135,25 +143,28 @@ agreeBox.addEventListener('change',()=>{agreeBtn.disabled=!agreeBox.checked;});
 agreeBtn.addEventListener('click',()=>{closePolicy();});
 window.addEventListener('DOMContentLoaded',()=>{openPolicy();});
 
-// All posts array (no special post here anymore)
+// Posts array (newest first)
 const posts=[
+  // Type A Posts
   {id:11,type:'A',image:'https://i.imgur.com/8HPjZxI.jpeg',title:"A peak of Tanya's 800 saris",celebrity:'Tanya Mittal',text:'',credit:'Instagram / tanyamittalofficial'},
+
+  // Type B Posts
   {id:10,type:'B',image:'',title:'Every girl wants a blush moment like this',celebrity:'Tanya Mittal & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DO2_qRoiPLg/',credit:'Instagram / realityshow_editz3000'},
+  
+  // Special sidebar post (image screenshot, smaller like other posts)
+  {id:30,type:'A',image:'https://i.imgur.com/EbUW3gU.jpeg',title:'We want to see this again',celebrity:'Tanya Mittal & Amaal Malik',text:'',credit:'Instagram / biggbosssss_19',sidebar:true,externalLink:'https://www.instagram.com/p/DRWrB3rDHsZ/'},
+
+  // Other existing posts
   {id:8,type:'B',image:'',title:'BB19 Die for moment',celebrity:'Armaan & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DRXlVhKE2Ww/',credit:'Instagram / proudly_armaalian'},
   {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!',credit:'Credit for parts joined to create design: Instagram / Shagun Vashishth & Tanya Mittal'},
   {id:7,type:'B',image:'',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',text:'',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'Instagram / mj.vishal'}
-];
-
-// Special sidebar posts array
-const specialPosts=[
-  {id:100,type:'A',image:'https://i.imgur.com/EbUW3gU.jpeg',title:'We want to see this again',celebrity:'Tanya Mittal & Amaal Malik',text:'',credit:'Instagram / biggbosssss_19',externalLink:'https://www.instagram.com/p/DRWrB3rDHsZ/'}
 ];
 
 let currentPost=null,lastViewedPostId=null;
 
 function renderGrid(postsArr){
   const postsList=document.getElementById('postsList');
-  postsList.innerHTML=postsArr.map(post=>{
+  postsList.innerHTML=postsArr.filter(p=>!p.sidebar).map(post=>{
     if(post.type==='A'){
       return `<div class="post-tile postA" onclick="showPost(${post.id})">
         <img class="tile-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
@@ -162,7 +173,7 @@ function renderGrid(postsArr){
           <span>${escapeHtml(post.celebrity)}</span>
         </div>
       </div>`;
-    } else { 
+    } else { // Post B
       return `<div class="post-tile postB" onclick="showPost(${post.id})">
         <div class="tile-overlay">
           <span>${escapeHtml(post.title)}</span>
@@ -172,12 +183,12 @@ function renderGrid(postsArr){
       </div>`;
     }
   }).join('');
-  
-  // Render special posts in sidebar only (small size)
-  const sidebar=document.getElementById('sidebarSpecialPosts');
-  sidebar.innerHTML=specialPosts.map(post=>{
-    return `<div class="post-tile postA" onclick="showPost(${post.id})">
-      <img class="tile-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">
+
+  // Render sidebar posts
+  const sidebar=document.getElementById('sidebarPosts');
+  sidebar.innerHTML=postsArr.filter(p=>p.sidebar).map(post=>{
+    return `<div class="post-tile postA" style="width:100%; margin-top:12px;" onclick="showPost(${post.id})">
+      <img class="tile-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" style="height:110px;">
       <div class="tile-overlay">
         <span>${escapeHtml(post.title)}</span>
         <span>${escapeHtml(post.celebrity)}</span>
@@ -187,12 +198,11 @@ function renderGrid(postsArr){
 }
 
 function showPost(id){
-  const post=posts.concat(specialPosts).find(p=>p.id===id);
+  const post=posts.find(p=>p.id===id);
   if(!post) return;
   currentPost=post;
   lastViewedPostId=id;
   document.getElementById('mainFeed').style.display='none';
-  
   let creditSection='';
   if(post.type==='A'){
     creditSection=`<div class="credit">${escapeHtml(post.credit)}</div>`;
@@ -200,11 +210,11 @@ function showPost(id){
     creditSection=`<div class="credit">${escapeHtml(post.credit)}</div>
     <div><a href="${escapeHtml(post.externalLink)}" target="_blank" rel="noopener">Check this out</a></div>`;
   }
-  
+
   let postContent='';
   if(post.type==='A'){
     postContent=`<img class="tile-img single" src="${escapeHtml(post.image)}" style="width:100%; height:auto; border-radius:12px;" alt="${escapeHtml(post.title)}">`;
-    if(post.externalLink){
+    if(post.sidebar && post.externalLink){
       postContent+=`<div style="margin-top:8px;"><a href="${escapeHtml(post.externalLink)}" target="_blank" rel="noopener">Check this out</a></div>`;
     }
   } else {
@@ -214,7 +224,7 @@ function showPost(id){
       ${creditSection}
     </div>`;
   }
-  
+
   document.getElementById('singlePostView').innerHTML=`
     <button class="back-btn" onclick="goBack()">← Back</button>
     <div class="post-card">
@@ -233,8 +243,7 @@ function showPost(id){
 function goBack(){ document.getElementById('mainFeed').style.display='flex'; document.getElementById('singlePostView').style.display='none'; }
 
 function renderSimilarPosts(currentId){
-  const allPosts=posts.concat(specialPosts);
-  return allPosts.filter(p=>p.id!==currentId).map(p=>{
+  return posts.filter(p=>p.id!==currentId).map(p=>{
     if(p.type==='A'){
       return `<div class="similar-post-card postA" onclick="showPost(${p.id})">
         <img class="similar-thumb" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">
@@ -264,8 +273,7 @@ if(searchInput){ searchInput.addEventListener('keyup',()=>{
   clearTimeout(searchTimer);
   searchTimer=setTimeout(()=>{
     const query=searchInput.value.toLowerCase();
-    const allPosts=posts.concat(specialPosts);
-    const filtered=allPosts.filter(p=>p.title.toLowerCase().includes(query)||p.celebrity.toLowerCase().includes(query));
+    const filtered=posts.filter(p=>p.title.toLowerCase().includes(query)||p.celebrity.toLowerCase().includes(query));
     if(document.getElementById('mainFeed').style.display!=='none'){ renderGrid(filtered); }
     if(document.getElementById('singlePostView').style.display!=='none'){
       const similarList=document.querySelector('.similar-posts-list');
