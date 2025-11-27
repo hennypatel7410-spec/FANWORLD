@@ -4,13 +4,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>FanWorld Feed & Post</title>
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-13053796798"></script>
+<!-- Google Analytics GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KKSRZ3184B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-13053796798');
+  gtag('config', 'G-KKSRZ3184B');
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
@@ -126,14 +126,15 @@ input, textarea, select, button { font-size: 16px; }
     <h2>Welcome to FanWorld!</h2>
     <p>Browse the latest posts. Click a post to see details!</p>
     <p>Our purpose is to provide with cute content and support social media users/creators. Posts may be added/removed from the dashboard.</p>
-    <!-- Sidebar special post container -->
-    <div id="sidebarPosts"></div>
+    <!-- Special sidebar posts will appear here -->
+    <div id="specialSidebarPosts"></div>
   </div>
 </div>
 
 <div class="container" style="display:none;" id="singlePostView"></div>
 
 <script>
+// Policy modal
 const policyModal=document.getElementById('policyModal');
 const agreeBox=document.getElementById('agreeBox');
 const agreeBtn=document.getElementById('agreeBtn');
@@ -143,21 +144,16 @@ agreeBox.addEventListener('change',()=>{agreeBtn.disabled=!agreeBox.checked;});
 agreeBtn.addEventListener('click',()=>{closePolicy();});
 window.addEventListener('DOMContentLoaded',()=>{openPolicy();});
 
-// Posts array (newest first)
+// Posts array
 const posts=[
-  // Type A Posts
   {id:11,type:'A',image:'https://i.imgur.com/8HPjZxI.jpeg',title:"A peak of Tanya's 800 saris",celebrity:'Tanya Mittal',text:'',credit:'Instagram / tanyamittalofficial'},
-
-  // Type B Posts
   {id:10,type:'B',image:'',title:'Every girl wants a blush moment like this',celebrity:'Tanya Mittal & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DO2_qRoiPLg/',credit:'Instagram / realityshow_editz3000'},
-  
-  // Special sidebar post (image screenshot, smaller like other posts)
-  {id:30,type:'A',image:'https://i.imgur.com/EbUW3gU.jpeg',title:'We want to see this again',celebrity:'Tanya Mittal & Amaal Malik',text:'',credit:'Instagram / biggbosssss_19',sidebar:true,externalLink:'https://www.instagram.com/p/DRWrB3rDHsZ/'},
-
-  // Other existing posts
   {id:8,type:'B',image:'',title:'BB19 Die for moment',celebrity:'Armaan & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DRXlVhKE2Ww/',credit:'Instagram / proudly_armaalian'},
   {id:20,type:'A',image:'https://i.imgur.com/rSxe36w.jpeg',title:"Tanya's dimples have their own fanbase",celebrity:'Tanya Mittal',text:'Her dimples truly have their own sweet fanbase!',credit:'Credit for parts joined to create design: Instagram / Shagun Vashishth & Tanya Mittal'},
-  {id:7,type:'B',image:'',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',text:'',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'Instagram / mj.vishal'}
+  {id:7,type:'B',image:'',title:'The new couple in town out of BB19',celebrity:'Natalia Janoszek & Mridul Tiwari',text:'',externalLink:'https://www.instagram.com/p/DRfHd9FjXwe/',credit:'Instagram / mj.vishal'},
+  
+  // Special sidebar post example
+  {id:30,type:'B',image:'https://i.imgur.com/EbUW3gU.jpeg',title:'We want to see this again',celebrity:'Tanya Mittal & Amaal Malik',text:'',externalLink:'https://www.instagram.com/p/DRWrB3rDHsZ/',credit:'Instagram / biggbosssss_19',sidebar:true}
 ];
 
 let currentPost=null,lastViewedPostId=null;
@@ -184,14 +180,15 @@ function renderGrid(postsArr){
     }
   }).join('');
 
-  // Render sidebar posts
-  const sidebar=document.getElementById('sidebarPosts');
+  // Sidebar posts
+  const sidebar=document.getElementById('specialSidebarPosts');
   sidebar.innerHTML=postsArr.filter(p=>p.sidebar).map(post=>{
-    return `<div class="post-tile postA" style="width:100%; margin-top:12px;" onclick="showPost(${post.id})">
-      <img class="tile-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" style="height:110px;">
+    return `<div class="post-tile postB" style="width:100%; height:110px; margin-top:10px;" onclick="showPost(${post.id})">
+      <img class="tile-img" src="${escapeHtml(post.image)}" style="height:110px; object-fit:cover; border-radius:12px;"/>
       <div class="tile-overlay">
         <span>${escapeHtml(post.title)}</span>
         <span>${escapeHtml(post.celebrity)}</span>
+        <div class="credit">${escapeHtml(post.credit)}</div>
       </div>
     </div>`;
   }).join('');
@@ -214,11 +211,9 @@ function showPost(id){
   let postContent='';
   if(post.type==='A'){
     postContent=`<img class="tile-img single" src="${escapeHtml(post.image)}" style="width:100%; height:auto; border-radius:12px;" alt="${escapeHtml(post.title)}">`;
-    if(post.sidebar && post.externalLink){
-      postContent+=`<div style="margin-top:8px;"><a href="${escapeHtml(post.externalLink)}" target="_blank" rel="noopener">Check this out</a></div>`;
-    }
   } else {
-    postContent=`<div class="postB" style="height:220px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+    postContent=`<div class="postB" style="height:110px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+      <img src="${escapeHtml(post.image)}" style="height:110px; object-fit:cover; border-radius:12px;"/>
       <span>${escapeHtml(post.title)}</span>
       <span>${escapeHtml(post.celebrity)}</span>
       ${creditSection}
@@ -304,3 +299,4 @@ document.addEventListener('DOMContentLoaded',()=>{ renderGrid(posts); });
 </script>
 </body>
 </html>
+
